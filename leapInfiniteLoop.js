@@ -13,8 +13,7 @@ function handleFingers(fingers){
     if(i===1){
       //console.log(fingers[i].tipPosition);
       x = fingers[i].tipPosition[0]+window.innerWidth/2;
-      y = window.innerWidth-fingers[i].tipPosition[1]
-      y = fingers[i].tipPosition[1];
+      y = window.innerWidth/2-fingers[i].tipPosition[1];
       z = fingers[i].tipPosition[2];
       //resetting max and mins
       if(x < rawXMin){
