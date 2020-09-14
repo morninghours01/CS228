@@ -1,8 +1,11 @@
 var controllerOptions = {};
-let i = 0;
+let x = window.innerWidth/2;
+let y = window.innerHeight/2;
 Leap.loop(controllerOptions, function(frame)
-{
-console.log(i);
-i++;
-}
+  {
+    clear();
+    circle(x, y, 50);
+    x+=Math.random()*2-1;
+    y+=Math.random()*2-1;
+  }
 );
