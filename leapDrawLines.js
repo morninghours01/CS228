@@ -1,6 +1,6 @@
 var controllerOptions = {};
-let x = window.innerWidth/2;
-let y = window.innerHeight/2;
+let x;
+var y;
 var z;
 let rawXMin = 500;
 let rawXMax = -500;
@@ -12,13 +12,11 @@ var percentX;
 var percentY
 
 
-function handleFingers(fingers){
-  for (i=0; i<fingers.length; i++){
-
+function handleFinger(finger){
       //console.log(fingers[i].tipPosition);
-      x = fingers[i].tipPosition[0];
-      y = fingers[i].tipPosition[1];
-      z = fingers[i].tipPosition[2];
+      x = finger.tipPosition[0];
+      y = finger.tipPosition[1];
+      z = finger.tipPosition[2];
       //resetting max and mins
       if(x < rawXMin){
         rawXMin = x;
@@ -37,20 +35,23 @@ function handleFingers(fingers){
         rawYMax = y;
         console.log("xmax is true")
       }
-      //console.log(x,y)
-      //console.log([rawXMin,rawXMax,rawYMin,rawYMax]);
+      console.log(x,y)
+      console.log([rawXMin,rawXMax,rawYMin,rawYMax]);
       rangeX = rawXMax-rawXMin;
       rangeY = rawYMax-rawYMin;
       percentX = (x-rawXMin)/rangeX
       x = percentX * window.innerWidth
       percentY = (y-rawYMin)/rangeY
       y = (1-percentY) * window.innerWidth
-      circle(x, y, 50);
-  }
+
+
 }
 
 function handleHand(hand){
-  handleFingers(hand.fingers)
+  for (i=0; i<hand.fingers.length; i++){
+    handleFinger(hand.fingers[i])
+    circle(x, y, 50);
+  }
 }
 
 function handleFrame(frame){
