@@ -33,7 +33,6 @@ function transformCoordinates(x,y){
     //console.log("xmax is true")
   }
 
-
   let percentX = (x-rawXMin)/(rawXMax-rawXMin);
   x = percentX * window.innerWidth;
 
@@ -41,8 +40,9 @@ function transformCoordinates(x,y){
   return [x,y];
 }
 
-function handleBone(bone){
-  //console.log(bone);
+function handleBone(bone,boneType){
+  console.log(bone);
+  console.log(boneType);
   x1= bone.nextJoint[0];
   y1 = bone.nextJoint[1];
   z1 = bone.nextJoint[2];
@@ -52,15 +52,14 @@ function handleBone(bone){
   y2 = bone.prevJoint[1];
   z2 = bone.prevJoint[2];
   [x2,y2] = transformCoordinates(x2,y2);
+  line(x1,y1,x2,y2);
 
 }
 
 function handleFinger(finger){
-    for(k=1;k<finger.bones.length;k++){
-      handleBone(finger.bones[k]);
-      line(x1,y1,x2,y2);
+    for(k=0;k<finger.bones.length;k++){
+      handleBone(finger.bones[k],finger.bones[k].type);
     }
-
 }
 
 function handleHand(hand){
