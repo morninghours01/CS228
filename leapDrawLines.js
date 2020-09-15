@@ -10,56 +10,49 @@ let rawXMin = 500;
 let rawXMax = -500;
 let rawYMin = 500;
 let rawYMax = -500;
-var rangeX;
-var rangeY;
-var percentX1;
-var percentX2;
-var percentY1;
-var percentY2;
+
+
+
+function transformCoordinates(x,y){
+  //resetting max and mins
+  if(x < rawXMin){
+    rawXMin = x;
+    //console.log("xmin is true")
+  }
+  if(x > rawXMax){
+    rawXMax = x;
+    //console.log("xmax is true")
+  }
+
+  if(y < rawYMin){
+    rawYMin = y;
+    //console.log("ymin is true")
+  }
+  if(y > rawYMax){
+    rawYMax = y;
+    //console.log("xmax is true")
+  }
+
+
+  let percentX = (x-rawXMin)/(rawXMax-rawXMin);
+  x = percentX * window.innerWidth;
+
+  y = rawYMax-y;
+  return [x,y];
+}
 
 function handleBone(bone){
   //console.log(bone);
   x1= bone.nextJoint[0];
   y1 = bone.nextJoint[1];
   z1 = bone.nextJoint[2];
+  [x1,y1] = transformCoordinates(x1,y1);
 
   x2 = bone.prevJoint[0];
   y2 = bone.prevJoint[1];
   z2 = bone.prevJoint[2];
-  //resetting max and mins
-  if(x2 < rawXMin){
-    rawXMin = x2;
-    //console.log("xmin is true")
-  }
-  if(x2 > rawXMax){
-    rawXMax = x2;
-    //console.log("xmax is true")
-  }
+  [x2,y2] = transformCoordinates(x2,y2);
 
-  if(y2 < rawYMin){
-    rawYMin = y2;
-    //console.log("ymin is true")
-  }
-  if(y2 > rawYMax){
-    rawYMax = y2;
-    //console.log("xmax is true")
-  }
-  //console.log(x,y)
-  //console.log([rawXMin,rawXMax,rawYMin,rawYMax]);
-  rangeX = rawXMax-rawXMin;
-  rangeY = rawYMax-rawYMin;
-
-  percentX1 = (x1-rawXMin)/rangeX
-  x1 = percentX1 * window.innerWidth
-  percentX2 = (x2-rawXMin)/rangeX
-  x2 = percentX2 * window.innerWidth
-  //
-  // percentY1 = (y1-rawYMin)/rangeY
-  // y1 = (1-percentY1) * window.innerWidth
-  y1 = rawYMax-y1
-  y2 = rawYMax-y2
-  // percentY2 = (y2-rawYMin)/rangeY
-  // y = (1-percentY2) * window.innerWidth
 }
 
 function handleFinger(finger){
