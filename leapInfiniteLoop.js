@@ -2,34 +2,49 @@ var controllerOptions = {};
 let x = window.innerWidth/2;
 let y = window.innerHeight/2;
 var z;
-let rawXMin = 3*window.innerWidth/4;
-let rawXMax = window.innerWidth/4;
-let rawYMin = 3*window.innerHeight/4;
-let rawYMax = window.innerHeight/4;
+let rawXMin = 500;
+let rawXMax = -500;
+let rawYMin = 500;
+let rawYMax = -500;
+var rangeX;
+var rangeY;
+var percentX;
+var percentY
 
 
 function handleFingers(fingers){
   for (i=0; i<fingers.length; i++){
     if(i===1){
       //console.log(fingers[i].tipPosition);
-      x = fingers[i].tipPosition[0]+window.innerWidth/2;
-      y = window.innerWidth/2-fingers[i].tipPosition[1];
+      x = fingers[i].tipPosition[0];
+      y = fingers[i].tipPosition[1];
       z = fingers[i].tipPosition[2];
       //resetting max and mins
       if(x < rawXMin){
-        rawXmin = x;
+        rawXMin = x;
+        console.log("xmin is true")
       }
-      else if(x > rawXMax){
-        rawXMax = x
+      if(x > rawXMax){
+        rawXMax = x;
+        console.log("xmax is true")
       }
 
       if(y < rawYMin){
-        rawYmin = y;
+        rawYMin = y;
+        console.log("ymin is true")
       }
-      else if(y > rawYMax){
-        rawYMax = y
+      if(y > rawYMax){
+        rawYMax = y;
+        console.log("xmax is true")
       }
-      console.log([rawXMin,rawXMax,rawYMin,rawYMax])
+      //console.log(x,y)
+      console.log([rawXMin,rawXMax,rawYMin,rawYMax]);
+      rangeX = rawXMax-rawXMin;
+      rangeY = rawYMax-rawYMin;
+      percentX = (x-rawXMin)/rangeX
+      x = percentX * window.innerWidth
+      percentY = (y-rawYMin)/rangeY
+      y = (1-percentY) * window.innerWidth
     }
 
   }
