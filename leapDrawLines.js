@@ -11,9 +11,14 @@ var rangeY;
 var percentX;
 var percentY
 
+function handleBone(bone){
+  console.log(bone);
+}
 
 function handleFinger(finger){
-      //console.log(fingers[i].tipPosition);
+    for(k=1;k<finger.bones.length;k++){
+      handleBone(finger.bones[k]);
+    }
       x = finger.tipPosition[0];
       y = finger.tipPosition[1];
       z = finger.tipPosition[2];
@@ -35,8 +40,8 @@ function handleFinger(finger){
         rawYMax = y;
         console.log("xmax is true")
       }
-      console.log(x,y)
-      console.log([rawXMin,rawXMax,rawYMin,rawYMax]);
+      //console.log(x,y)
+      //console.log([rawXMin,rawXMax,rawYMin,rawYMax]);
       rangeX = rawXMax-rawXMin;
       rangeY = rawYMax-rawYMin;
       percentX = (x-rawXMin)/rangeX
