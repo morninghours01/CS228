@@ -12,7 +12,6 @@ let rawYMin = 500;
 let rawYMax = -500;
 
 
-
 function transformCoordinates(x,y){
   //resetting max and mins
   if(x < rawXMin){
