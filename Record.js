@@ -11,6 +11,9 @@ let rawXMax = -500;
 let rawYMin = 500;
 let rawYMax = -500;
 
+let prevNumHands;
+let currentNumHands;
+
 
 function transformCoordinates(x,y){
   //resetting max and mins
@@ -53,22 +56,26 @@ function handleBone(bone,boneType){
   [x2,y2] = transformCoordinates(x2,y2);
   strokeWeight(16-4*boneType);
 
-  stroke(255-256/5*(boneType+1))
+
+  stroke(color(0,(255-256/5*(boneType+1)),0))
   line(x1,y1,x2,y2);
 
 }
 
-// function handleFinger(finger){
-//     for(k=0;k<finger.bones.length;k++){
-//       handleBone(finger.bones[k],finger.bones[k].type);
-//     }
-// }
+/*
+function handleFinger(finger){
+    for(k=0;k<finger.bones.length;k++){
+      handleBone(finger.bones[k],finger.bones[k].type);
+    }
+}
 
-// function handleHand(hand){
-//   for (i=0; i<hand.fingers.length; i++){
-//     handleFinger(hand.fingers[i])
-//   }
-// }
+function handleHand(hand){
+  for (i=0; i<hand.fingers.length; i++){
+    handleFinger(hand.fingers[i])
+  }
+}
+*/
+
 function handleHand(hand){
   let numFingerBones = hand.fingers[0].bones.length;
   let numFingers = hand.fingers.length;
@@ -90,10 +97,16 @@ function handleFrame(frame){
 
 Leap.loop(controllerOptions, function(frame)
   {
+
+    currentNumHands = frame.hands.length;
+
     clear();
     handleFrame(frame);
+    console.log(currentNumHands);
+    console.log(prevNumHands);
 
 
+    prevNumHands = currentNumHands;
     // x+=Math.random()*2-1;
     // y+=Math.random()*2-1;
 }
