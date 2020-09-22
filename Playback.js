@@ -1,100 +1,25 @@
-var controllerOptions = {};
-let x1;
-let x2;
-let y1;
-let y2;
-let z1;
-let z2;
+let oneFrameofData = nj.array([[[  768.35282,    163.725,    68.9342,  768.35282,    163.725,    68.9342],
+        [  768.35282,    163.725,    68.9342,   637.5183,    143.746,     35.707],
+        [   637.5183,    143.746,     35.707,  577.29482,    132.166,     7.0896],
+        [  577.29482,    132.166,     7.0896,  556.18304,    125.968,   -14.9005]],
+       [[  808.26892,    142.073,    69.9662,  723.44205,    109.024,    7.47894],
+        [  723.44205,    109.024,    7.47894,  691.49877,     93.113,   -31.6833],
+        [  691.49877,     93.113,   -31.6833,  673.47712,    103.888,   -52.8808],
+        [  673.47712,    103.888,   -52.8808,  666.80592,    119.238,   -60.2119]],
+       [[  856.72792,    139.796,    66.6778,  814.99047,     108.45,    5.16013],
+        [  814.99047,     108.45,    5.16013,  800.45131,     93.234,   -40.4417],
+        [  800.45131,     93.234,   -40.4417,  772.63758,    106.073,   -64.9182],
+        [  772.63758,    106.073,   -64.9182,  752.08053,     122.44,   -72.7196]],
+       [[   905.7595,    140.757,    63.3365,  907.23047,    113.405,    6.98481],
+        [  907.23047,    113.405,    6.98481,  910.23609,     102.73,   -36.3949],
+        [  910.23609,     102.73,   -36.3949,  881.19273,    117.691,   -58.6406],
+        [  881.19273,    117.691,   -58.6406,  854.55204,    134.443,   -63.8806]],
+       [[  951.21621,    148.878,    59.1806,  987.30611,    122.721,     8.1624],
+        [  987.30611,    122.721,     8.1624, 1043.66926,    118.223,   -24.1886],
+        [ 1043.66926,    118.223,   -24.1886, 1028.48096,    128.615,   -40.3513],
+        [ 1028.48096,    128.615,   -40.3513,  989.26186,    142.022,   -45.6914]]])
 
-let rawXMin = 500;
-let rawXMax = -500;
-let rawYMin = 500;
-let rawYMax = -500;
-
-
-function transformCoordinates(x,y){
-  //resetting max and mins
-  if(x < rawXMin){
-    rawXMin = x;
-    //console.log("xmin is true")
-  }
-  if(x > rawXMax){
-    rawXMax = x;
-    //console.log("xmax is true")
-  }
-
-  if(y < rawYMin){
-    rawYMin = y;
-    //console.log("ymin is true")
-  }
-  if(y > rawYMax){
-    rawYMax = y;
-    //console.log("xmax is true")
-  }
-
-  let percentX = (x-rawXMin)/(rawXMax-rawXMin);
-  x = percentX * window.innerWidth;
-
-  y = rawYMax-y;
-  return [x,y];
+function draw(){
+  clear();
+  console.log(oneFrameofData.toString())
 }
-
-function handleBone(bone,boneType){
-  //console.log(bone);
-  //console.log(boneType);
-  x1= bone.nextJoint[0];
-  y1 = bone.nextJoint[1];
-  z1 = bone.nextJoint[2];
-  [x1,y1] = transformCoordinates(x1,y1);
-
-  x2 = bone.prevJoint[0];
-  y2 = bone.prevJoint[1];
-  z2 = bone.prevJoint[2];
-  [x2,y2] = transformCoordinates(x2,y2);
-  strokeWeight(16-4*boneType);
-
-  stroke(255-256/5*(boneType+1))
-  line(x1,y1,x2,y2);
-
-}
-
-// function handleFinger(finger){
-//     for(k=0;k<finger.bones.length;k++){
-//       handleBone(finger.bones[k],finger.bones[k].type);
-//     }
-// }
-
-// function handleHand(hand){
-//   for (i=0; i<hand.fingers.length; i++){
-//     handleFinger(hand.fingers[i])
-//   }
-// }
-function handleHand(hand){
-  let numFingerBones = hand.fingers[0].bones.length;
-  let numFingers = hand.fingers.length;
-
-  for(k=numFingerBones-1;k>=0;k--){
-    for (i=0; i<numFingers; i++){
-      handleBone(hand.fingers[i].bones[k],hand.fingers[i].bones[k].type);
-      //console.log([i,k])
-    }
-  }
-}
-
-function handleFrame(frame){
-  if(frame.hands.length === 1){
-    handleHand(frame.hands[0])
-  }
-}
-
-
-Leap.loop(controllerOptions, function(frame)
-  {
-    clear();
-    handleFrame(frame);
-
-
-    // x+=Math.random()*2-1;
-    // y+=Math.random()*2-1;
-}
-);
