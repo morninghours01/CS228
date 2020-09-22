@@ -13,6 +13,7 @@ let rawYMax = -500;
 
 let prevNumHands;
 let currentNumHands;
+var oneFrameOfData = nj.zeros([5,4,6]);
 
 
 function transformCoordinates(x,y){
@@ -42,7 +43,7 @@ function transformCoordinates(x,y){
   return [x,y];
 }
 
-function handleBone(bone,boneType){
+function handleBone(bone,boneType,fingerIdx){
   //console.log(bone);
   //console.log(boneType);
   x1= bone.nextJoint[0];
@@ -54,6 +55,14 @@ function handleBone(bone,boneType){
   y2 = bone.prevJoint[1];
   z2 = bone.prevJoint[2];
   [x2,y2] = transformCoordinates(x2,y2);
+
+  oneFrameOfData.set(fingerIdx,boneType,0, x2 )
+  oneFrameOfData.set(fingerIdx,boneType,1, y2 )
+  oneFrameOfData.set(fingerIdx,boneType,2, z2 )
+  oneFrameOfData.set(fingerIdx,boneType,3, x1 )
+  oneFrameOfData.set(fingerIdx,boneType,4, y1 )
+  oneFrameOfData.set(fingerIdx,boneType,5, z1 )
+
   strokeWeight(16-4*boneType);
 
   if(currentNumHands === 1){
@@ -88,7 +97,11 @@ function handleHand(hand){
 
   for(k=numFingerBones-1;k>=0;k--){
     for (i=0; i<numFingers; i++){
-      handleBone(hand.fingers[i].bones[k],hand.fingers[i].bones[k].type);
+      handleBone(
+        hand.fingers[i].bones[k],
+        hand.fingers[i].bones[k].type,
+        hand.fingers[i].type
+      );
       //console.log([i,k])
     }
   }
@@ -103,6 +116,7 @@ function handleFrame(frame){
 function recordData(){
   if(currentNumHands == 1 && prevNumHands == 2){
     background(0)
+    console.log(oneFrameOfData.toString())
   }
 }
 
@@ -114,11 +128,12 @@ Leap.loop(controllerOptions, function(frame)
     clear();
     handleFrame(frame);
     recordData();
-    console.log(currentNumHands);
-    console.log(prevNumHands);
 
 
     prevNumHands = currentNumHands;
+
+
+
     // x+=Math.random()*2-1;
     // y+=Math.random()*2-1;
 }
