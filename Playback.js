@@ -21,5 +21,16 @@ let oneFrameofData = nj.array([[[  768.35282,    163.725,    68.9342,  768.35282
 
 function draw(){
   clear();
-  console.log(oneFrameofData.toString())
+  for(i=0; i<oneFrameofData.shape[0]; i++){
+    for(j=0; j<oneFrameofData.shape[1]; j++){
+      console.log(oneFrameofData.toString())
+    }
+  }
+  // for(i=0,i < oneFrameofData.shape[0],i++){
+  //   for(j=0, j < oneFrameofData.shape[1],j++){
+  //     console.log(i,j);
+  //   }
+  //
+  // }
+  console.log(oneFrameofData.shape)
 }
