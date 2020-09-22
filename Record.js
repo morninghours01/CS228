@@ -56,9 +56,15 @@ function handleBone(bone,boneType){
   [x2,y2] = transformCoordinates(x2,y2);
   strokeWeight(16-4*boneType);
 
+  if(currentNumHands === 1){
+    stroke(color(0,(255-256/5*(boneType+1)),0))
+    line(x1,y1,x2,y2);
+  }
+  else if(currentNumHands > 1) {
+    stroke(color((255-256/5*(boneType+1)),0,0))
+    line(x1,y1,x2,y2);
+  }
 
-  stroke(color(0,(255-256/5*(boneType+1)),0))
-  line(x1,y1,x2,y2);
 
 }
 
@@ -89,11 +95,16 @@ function handleHand(hand){
 }
 
 function handleFrame(frame){
-  if(frame.hands.length === 1){
+  if(frame.hands.length >= 1){
     handleHand(frame.hands[0])
   }
 }
 
+function recordData(){
+  if(currentNumHands == 1 && prevNumHands == 2){
+    background(0)
+  }
+}
 
 Leap.loop(controllerOptions, function(frame)
   {
@@ -102,6 +113,7 @@ Leap.loop(controllerOptions, function(frame)
 
     clear();
     handleFrame(frame);
+    recordData();
     console.log(currentNumHands);
     console.log(prevNumHands);
 
