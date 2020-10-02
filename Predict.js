@@ -156,6 +156,11 @@ let trainingCompleted = false;
 
 function Train(){
   console.log("I am being Trained");
+  for(i=0;i<numSamples;i+=2){
+    currentFeatures = irisData.pick(i).slice([0,numFeatures]);
+    console.log(i)
+    console.log(currentFeatures.toString())
+  }
   trainingCompleted = true;
 }
 
@@ -168,6 +173,4 @@ function draw(){
   if(!trainingCompleted){
     Train();
   }
-
-
 }
