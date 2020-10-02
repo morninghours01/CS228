@@ -150,6 +150,7 @@ var irisData = nj.array( [[5.1,3.5,1.4,0.2,0. ],
  [5.9,3. ,5.1,1.8,2. ]] );
 
 numSamples = irisData.shape[0]
+numFeatures = irisData.shape[1]-1
 
 let trainingCompleted = false;
 
@@ -168,8 +169,5 @@ function draw(){
     Train();
   }
 
-  Test();
 
-  console.log(irisData.toString())
-  console.log(numSamples.toString())
 }
