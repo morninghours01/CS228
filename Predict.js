@@ -161,10 +161,10 @@ let trainingCompleted = false;
 function Train(){
   console.log("I am being Trained");
   for(i=0;i<numSamples;i+=2){
-    currentFeatures = irisData.pick(i).slice([0,numFeatures]);
+    currentFeatures = irisData.pick(i).slice([0,2]);
     currentLabel = irisData.get(i,-1)
     //console.log(i)
-    //console.log(currentLabel.toString())
+    console.log(currentFeatures.toString())
     knnClassifier.addExample(currentFeatures.tolist(),currentLabel)
   }
   trainingCompleted = true;
@@ -184,7 +184,7 @@ function Test(){
   console.log("I am being Tested");
 
     //console.log(i);
-    currentFeatures = irisData.pick(testingSampleIndex).slice([0,numFeatures]);
+    currentFeatures = irisData.pick(testingSampleIndex).slice([0,2]);
     currentLabel = irisData.get(testingSampleIndex,-1)
     //console.log(currentFeatures.toString())
     //console.log(currentLabel.toString())
