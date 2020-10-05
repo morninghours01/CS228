@@ -102,9 +102,13 @@ function handleFrame(frame){
 }
 
 function recordData(){
-  if(currentNumHands == 1 && prevNumHands == 2){
-    background(0)
-    //console.log( framesOfData.pick(null,null,null,1).toString() );
+  if(currentNumHands == 2){
+    //background(0)
+    console.log( framesOfData.toString() );
+    currentSample++;
+    if(currentSample == numSamples){
+      currentSample=0;
+    }
   }
 }
 
@@ -116,11 +120,8 @@ Leap.loop(controllerOptions, function(frame)
     recordData();
 
 
+
     prevNumHands = currentNumHands;
 
-
-
-    // x+=Math.random()*2-1;
-    // y+=Math.random()*2-1;
 }
 );
