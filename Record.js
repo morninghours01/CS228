@@ -32,12 +32,12 @@ function handleBone(bone,boneType,fingerIdx,InteractionBox){
   y2 = normalizedPrevJoint[1]
   z2 = normalizedPrevJoint[2]
 
-  framesOfData.set(fingerIdx, boneType, 0, x2 )
-  framesOfData.set(fingerIdx, boneType, 1, y2 )
-  framesOfData.set(fingerIdx, boneType, 2, z2 )
-  framesOfData.set(fingerIdx, boneType, 3, x1 )
-  framesOfData.set(fingerIdx, boneType, 4, y1 )
-  framesOfData.set(fingerIdx, boneType, 5, z1 )
+  framesOfData.set(fingerIdx, boneType, 0, currentSample, x2 )
+  framesOfData.set(fingerIdx, boneType, 1, currentSample, y2 )
+  framesOfData.set(fingerIdx, boneType, 2, currentSample, z2 )
+  framesOfData.set(fingerIdx, boneType, 3, currentSample, x1 )
+  framesOfData.set(fingerIdx, boneType, 4, currentSample, y1 )
+  framesOfData.set(fingerIdx, boneType, 5, currentSample, z1 )
 
   //scale data for display
   var canvasX1 = window.innerWidth * x1;
@@ -104,13 +104,12 @@ function handleFrame(frame){
 function recordData(){
   if(currentNumHands == 1 && prevNumHands == 2){
     background(0)
-    console.log(framesOfData.toString())
+    //console.log( framesOfData.pick(null,null,null,1).toString() );
   }
 }
 
 Leap.loop(controllerOptions, function(frame)
   {
-
     currentNumHands = frame.hands.length;
     clear();
     handleFrame(frame);
