@@ -8,8 +8,11 @@ let z2;
 
 let prevNumHands;
 let currentNumHands;
-var oneFrameOfData = nj.zeros([5,4,6]);
 
+let numSamples = 2;
+let currentSample = 0;
+
+let framesOfData = nj.zeros([5,4,6,numSamples]);
 
 function handleBone(bone,boneType,fingerIdx,InteractionBox){
   //console.log(bone);
@@ -29,12 +32,12 @@ function handleBone(bone,boneType,fingerIdx,InteractionBox){
   y2 = normalizedPrevJoint[1]
   z2 = normalizedPrevJoint[2]
 
-  oneFrameOfData.set(fingerIdx,boneType,0, x2 )
-  oneFrameOfData.set(fingerIdx,boneType,1, y2 )
-  oneFrameOfData.set(fingerIdx,boneType,2, z2 )
-  oneFrameOfData.set(fingerIdx,boneType,3, x1 )
-  oneFrameOfData.set(fingerIdx,boneType,4, y1 )
-  oneFrameOfData.set(fingerIdx,boneType,5, z1 )
+  framesOfData.set(fingerIdx, boneType, 0, x2 )
+  framesOfData.set(fingerIdx, boneType, 1, y2 )
+  framesOfData.set(fingerIdx, boneType, 2, z2 )
+  framesOfData.set(fingerIdx, boneType, 3, x1 )
+  framesOfData.set(fingerIdx, boneType, 4, y1 )
+  framesOfData.set(fingerIdx, boneType, 5, z1 )
 
   //scale data for display
   var canvasX1 = window.innerWidth * x1;
@@ -101,7 +104,7 @@ function handleFrame(frame){
 function recordData(){
   if(currentNumHands == 1 && prevNumHands == 2){
     background(0)
-    console.log(oneFrameOfData.toString())
+    console.log(framesOfData.toString())
   }
 }
 
