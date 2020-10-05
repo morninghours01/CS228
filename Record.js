@@ -16,30 +16,18 @@ function handleBone(bone,boneType,fingerIdx,InteractionBox){
   let normalizedNextJoint;
   let normalizedPrevJoint;
 
+  //get data
   normalizedNextJoint = InteractionBox.normalizePoint(bone.nextJoint, true)
-
   //normalizedNextJoint = bone.nextJoint;
   x1 = normalizedNextJoint[0]
   y1 = normalizedNextJoint[1]
   z1 = normalizedNextJoint[2]
-
-  var canvasX1 = window.innerWidth * x1;
-  x1 = canvasX1.toFixed(1)
-  var canvasY1 = window.innerHeight * (1 - y1);
-  y1 = canvasY1.toFixed(1)
-
-
 
   normalizedPrevJoint = InteractionBox.normalizePoint(bone.prevJoint, true)
   //normalizedPrevJoint = bone.prevJoint;
   x2 = normalizedPrevJoint[0]
   y2 = normalizedPrevJoint[1]
   z2 = normalizedPrevJoint[2]
-
-  var canvasX2 = window.innerWidth * x2;
-  x2 = canvasX2.toFixed(1)
-  var canvasY2 = window.innerHeight * (1 - y2);
-  y2 = canvasY2.toFixed(1)
 
   oneFrameOfData.set(fingerIdx,boneType,0, x2 )
   oneFrameOfData.set(fingerIdx,boneType,1, y2 )
@@ -48,16 +36,25 @@ function handleBone(bone,boneType,fingerIdx,InteractionBox){
   oneFrameOfData.set(fingerIdx,boneType,4, y1 )
   oneFrameOfData.set(fingerIdx,boneType,5, z1 )
 
-  strokeWeight(2*(16-4*boneType));
+  //scale data for display
+  var canvasX1 = window.innerWidth * x1;
+  canvasX1 = canvasX1.toFixed(1)
+  var canvasY1 = window.innerHeight * (1 - y1);
+  canvasY1 = canvasY1.toFixed(1)
 
-  console.log(x1,y1,x2,y2)
+  var canvasX2 = window.innerWidth * x2;
+  canvasX2 = canvasX2.toFixed(1)
+  var canvasY2 = window.innerHeight * (1 - y2);
+  canvasY2 = canvasY2.toFixed(1)
+
+  strokeWeight(2*(16-4*boneType));
   if(currentNumHands === 1){
     stroke(color(0,(255-256/5*(boneType+1)),0))
-    line(x1,y1,x2,y2);
+    line(canvasX1,canvasY1,canvasX2,canvasY2);
   }
   else if(currentNumHands > 1) {
     stroke(color((255-256/5*(boneType+1)),0,0))
-    line(x1,y1,x2,y2);
+    line(canvasX1,canvasY1,canvasX2,canvasY2);
   }
 
 
