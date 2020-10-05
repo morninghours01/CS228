@@ -158,13 +158,19 @@ numFeatures = irisData.shape[1]-1
 
 let trainingCompleted = false;
 
+function DrawCircles(){
+  for(i=0;i<numSamples;i++){
+    console.log(irisData.get(i,0),irisData.get(i,1));
+  }
+}
+
 function Train(){
   console.log("I am being Trained");
   for(i=0;i<numSamples;i+=2){
     currentFeatures = irisData.pick(i).slice([0,2]);
     currentLabel = irisData.get(i,-1)
     //console.log(i)
-    console.log(currentFeatures.toString())
+    //console.log(currentFeatures.toString())
     knnClassifier.addExample(currentFeatures.tolist(),currentLabel)
   }
   trainingCompleted = true;
@@ -172,8 +178,8 @@ function Train(){
 
 function GotResults(err,result){
 
-  console.log("Prediction: ", parseInt(result.label));
-  console.log("Sample Index: ", testingSampleIndex);
+  //console.log("Prediction: ", parseInt(result.label));
+  //console.log("Sample Index: ", testingSampleIndex);
   testingSampleIndex+=2;
   if(testingSampleIndex>numSamples){
     testingSampleIndex=0;
@@ -197,5 +203,6 @@ function draw(){
     Train();
   }
 
-  Test()
+  Test();
+  DrawCircles();
 }
