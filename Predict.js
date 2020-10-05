@@ -1,7 +1,6 @@
 const knnClassifier = ml5.KNNClassifier();
 let testingSampleIndex = 1;
 
-
 var irisData = nj.array( [[5.1,3.5,1.4,0.2,0. ],
  [4.9,3. ,1.4,0.2,0. ],
  [4.7,3.2,1.3,0.2,0. ],
@@ -156,16 +155,74 @@ var irisData = nj.array( [[5.1,3.5,1.4,0.2,0. ],
 numSamples = irisData.shape[0]
 numFeatures = irisData.shape[1]-1
 
+let predictedClassLabels = nj.zeros(numSamples);
+
 let trainingCompleted = false;
 
 function DrawCircles(){
   for(i=0;i<numSamples;i++){
-    //console.log(irisData.get(i,0),irisData.get(i,1));
+    console.log(i)
     x = 150*(irisData.get(i,0)-2)
     y = 160*(irisData.get(i,1)-1)
-    stroke(51);
-    strokeWeight(2);
+    c = irisData.get(i,-1)
+    let c1;
+    let c2;
+    let c3;
+
+    switch(c){
+      case 0:
+        c1 = 255;
+        c2 = 0;
+        c3 = 0
+        break;
+      case 1:
+        c1 = 0;
+        c2 = 255;
+        c3 = 0;
+        break;
+      case 2:
+        c1 = 0;
+        c2 = 0;
+        c3 = 255;
+        break;
+      default:
+        fill(0,0,0)
+    }
+
+    fill(c1,c2,c3);
+
+    if(i % 2){
+      q = predictedClassLabels.get(i);
+      switch(q){
+        case 0:
+          q1 = 255;
+          q2 = 0;
+          q3 = 0
+          break;
+        case 1:
+          q1 = 0;
+          q2 = 255;
+          q3 = 0;
+          break;
+        case 2:
+          q1 = 0;
+          q2 = 0;
+          q3 = 255;
+          break;
+        default:
+          fill(0,0,0)
+      }
+      stroke(q1,q2,q3)
+    }
+    else {
+      stroke(0,0,0)
+    }
+
+    strokeWeight(1.5);
     circle(x,y,12);
+    if(i==testingSampleIndex){
+      console.log('poop',i)
+    }
   }
 }
 
@@ -184,22 +241,26 @@ function Train(){
 function GotResults(err,result){
 
   //console.log("Prediction: ", parseInt(result.label));
-  //console.log("Sample Index: ", testingSampleIndex);
-  testingSampleIndex+=2;
-  if(testingSampleIndex>numSamples){
-    testingSampleIndex=0;
-  }
+  //modify array
+  predictedClassLabels.set(testingSampleIndex,parseInt(result.label));
+  //increment
+
 }
 
 function Test(){
   console.log("I am being Tested");
-
     //console.log(i);
     currentFeatures = irisData.pick(testingSampleIndex).slice([0,2]);
     currentLabel = irisData.get(testingSampleIndex,-1)
     //console.log(currentFeatures.toString())
     //console.log(currentLabel.toString())
     knnClassifier.classify(currentFeatures.tolist(),GotResults);
+
+    testingSampleIndex+=2;
+    if(testingSampleIndex>=numSamples){
+     testingSampleIndex=1;
+    }
+
 }
 
 function draw(){
@@ -209,5 +270,8 @@ function draw(){
   }
 
   Test();
+  console.log(testingSampleIndex);
   DrawCircles();
+
+  //console.log(predictedClassLabels.toString())
 }
