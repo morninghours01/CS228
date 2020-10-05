@@ -160,7 +160,12 @@ let trainingCompleted = false;
 
 function DrawCircles(){
   for(i=0;i<numSamples;i++){
-    console.log(irisData.get(i,0),irisData.get(i,1));
+    //console.log(irisData.get(i,0),irisData.get(i,1));
+    x = 150*(irisData.get(i,0)-2)
+    y = 160*(irisData.get(i,1)-1)
+    stroke(51);
+    strokeWeight(2);
+    circle(x,y,12);
   }
 }
 
