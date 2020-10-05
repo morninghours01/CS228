@@ -1,3 +1,4 @@
+nj.config.printThreshold = 1000;
 var controllerOptions = {};
 let x1;
 let x2;
@@ -102,8 +103,14 @@ function handleFrame(frame){
 }
 
 function recordData(){
+  if(prevNumHands == 2 && currentNumHands < 2){
+    background(0)
+  }
   if(currentNumHands == 2){
-    //background(0)
+    if(prevNumHands==1){
+      background(0)
+    }
+
     console.log( framesOfData.toString() );
     currentSample++;
     if(currentSample == numSamples){
