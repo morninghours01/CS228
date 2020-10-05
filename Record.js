@@ -6,51 +6,40 @@ let y2;
 let z1;
 let z2;
 
-let rawXMin = 500;
-let rawXMax = -500;
-let rawYMin = 500;
-let rawYMax = -500;
-
 let prevNumHands;
 let currentNumHands;
 var oneFrameOfData = nj.zeros([5,4,6]);
 
 
-function transformCoordinates(x,y){
-  //resetting max and mins
-  if(x < rawXMin){
-    rawXMin = x;
-    //console.log("xmin is true")
-  }
-  if(x > rawXMax){
-    rawXMax = x;
-    //console.log("xmax is true")
-  }
-
-  if(y < rawYMin){
-    rawYMin = y;
-    //console.log("ymin is true")
-  }
-  if(y > rawYMax){
-    rawYMax = y;
-    //console.log("xmax is true")
-  }
-
-  let percentX = (x-rawXMin)/(rawXMax-rawXMin);
-  x = percentX * window.innerWidth;
-
-  y = rawYMax-y;
-  return [x,y];
-}
-
-function handleBone(bone,boneType,fingerIdx){
+function handleBone(bone,boneType,fingerIdx,InteractionBox){
   //console.log(bone);
-  //console.log(boneType);
-  [x1,y1,z1]= bone.nextJoint;
-  [x1,y1] = transformCoordinates(x1,y1);
+  let normalizedNextJoint;
+  let normalizedPrevJoint;
 
-  [x2,y2,z2] = bone.prevJoint;
-  [x2,y2] = transformCoordinates(x2,y2);
+  normalizedNextJoint = InteractionBox.normalizePoint(bone.nextJoint, true)
+
+  //normalizedNextJoint = bone.nextJoint;
+  x1 = normalizedNextJoint[0]
+  y1 = normalizedNextJoint[1]
+  z1 = normalizedNextJoint[2]
+
+  var canvasX1 = window.innerWidth * x1;
+  x1 = canvasX1.toFixed(1)
+  var canvasY1 = window.innerHeight * (1 - y1);
+  y1 = canvasY1.toFixed(1)
+
+
+
+  normalizedPrevJoint = InteractionBox.normalizePoint(bone.prevJoint, true)
+  //normalizedPrevJoint = bone.prevJoint;
+  x2 = normalizedPrevJoint[0]
+  y2 = normalizedPrevJoint[1]
+  z2 = normalizedPrevJoint[2]
+
+  var canvasX2 = window.innerWidth * x2;
+  x2 = canvasX2.toFixed(1)
+  var canvasY2 = window.innerHeight * (1 - y2);
+  y2 = canvasY2.toFixed(1)
 
   oneFrameOfData.set(fingerIdx,boneType,0, x2 )
   oneFrameOfData.set(fingerIdx,boneType,1, y2 )
@@ -59,8 +48,9 @@ function handleBone(bone,boneType,fingerIdx){
   oneFrameOfData.set(fingerIdx,boneType,4, y1 )
   oneFrameOfData.set(fingerIdx,boneType,5, z1 )
 
-  strokeWeight(16-4*boneType);
+  strokeWeight(2*(16-4*boneType));
 
+  console.log(x1,y1,x2,y2)
   if(currentNumHands === 1){
     stroke(color(0,(255-256/5*(boneType+1)),0))
     line(x1,y1,x2,y2);
@@ -87,7 +77,7 @@ function handleHand(hand){
 }
 */
 
-function handleHand(hand){
+function handleHand(hand,InteractionBox){
   let numFingerBones = hand.fingers[0].bones.length;
   let numFingers = hand.fingers.length;
 
@@ -96,7 +86,8 @@ function handleHand(hand){
       handleBone(
         hand.fingers[i].bones[k],
         hand.fingers[i].bones[k].type,
-        hand.fingers[i].type
+        hand.fingers[i].type,
+        InteractionBox
       );
       //console.log([i,k])
     }
@@ -105,7 +96,8 @@ function handleHand(hand){
 
 function handleFrame(frame){
   if(frame.hands.length >= 1){
-    handleHand(frame.hands[0])
+
+    handleHand(frame.hands[0],frame.interactionBox);
   }
 }
 
@@ -120,7 +112,6 @@ Leap.loop(controllerOptions, function(frame)
   {
 
     currentNumHands = frame.hands.length;
-
     clear();
     handleFrame(frame);
     recordData();
