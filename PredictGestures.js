@@ -15,20 +15,19 @@ function Train(){
   console.log("I am being Trained");
   for(i=0; i<numTrainingSamples; i++){
 
-    let features = reshapeTensor(train0,i);
+    let features0 = reshapeTensor(train0,i);
     label = 0;
-    knnClassifier.addExample(features.tolist(), label);
+    knnClassifier.addExample(features0.tolist(), label);
 
-    features = reshapeTensor(train1,i)
+    features1 = reshapeTensor(train1,i)
     label = 1;
-    knnClassifier.addExample(features.tolist(), label);
+    knnClassifier.addExample(features1.tolist(), label);
   }
 
   trainingCompleted = true;
 }
 
 function GotResults(err,result){
-
   console.log("Prediction: ", parseInt(result.label));
   //predictedClassLabels.set(testingSampleIndex,parseInt(result.label));
 
@@ -40,7 +39,7 @@ function Test(){
 
   let currentTestingSample = reshapeTensor(test,testingSampleIndex);
   knnClassifier.classify(currentTestingSample.tolist(),GotResults);
-  console.log(currentTestingSample.toString());
+  //console.log(currentTestingSample.toString());
 
   testingSampleIndex++;
   if(testingSampleIndex>=numTestingSamples){
