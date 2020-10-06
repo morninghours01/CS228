@@ -1,7 +1,8 @@
 const knnClassifier = ml5.KNNClassifier();
-let testingSampleIndex = 1;
 
-
+let numTrainingSamples = train0.shape[3];
+let testingSampleIndex = 0;
+let numTestingSamples = test.shape[3];
 let trainingCompleted = false;
 
 function reshapeTensor(tensor4d,sample){
@@ -12,10 +13,10 @@ function reshapeTensor(tensor4d,sample){
 
 function Train(){
   console.log("I am being Trained");
-  for(i=0; i<train0.shape[3]; i++){
+  for(i=0; i<numTrainingSamples; i++){
     let features = reshapeTensor(train0,i);
-    console.log(features.toString());
-    label = 0;
+    //console.log(features.toString());
+    label = 1;
     knnClassifier.addExample(features.tolist(), label);
 
   }
@@ -23,15 +24,24 @@ function Train(){
   trainingCompleted = true;
 }
 
+function GotResults(err,result){
+
+  console.log("Prediction: ", parseInt(result.label));
+  //predictedClassLabels.set(testingSampleIndex,parseInt(result.label));
+
+
+}
+
 function Test(){
   console.log("I am being Tested");
 
-  let features = reshapeTensor(test,i);
-  knnClassifier.classify(features.tolist(),GotResults);
+  let currentTestingSample = reshapeTensor(test,testingSampleIndex);
+  knnClassifier.classify(currentTestingSample.tolist(),GotResults);
+  console.log(currentTestingSample.toString());
 
-  testingSampleIndex+=2;
-  if(testingSampleIndex>=numSamples){
-    testingSampleInd
+  testingSampleIndex++;
+  if(testingSampleIndex>=numTestingSamples){
+    testingSampleIndex = 0;
   }
 }
 
