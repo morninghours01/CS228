@@ -10,7 +10,7 @@ let z2;
 let prevNumHands;
 let currentNumHands;
 
-let numSamples = 2;
+let numSamples = 100;
 let currentSample = 0;
 
 let framesOfData = nj.zeros([5,4,6,numSamples]);
@@ -113,7 +113,7 @@ function recordData(){
 
     console.log( framesOfData.toString() );
     currentSample++;
-    if(currentSample == numSamples){
+    if(currentSample >= numSamples){
       currentSample=0;
     }
   }

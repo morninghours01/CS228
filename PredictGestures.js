@@ -1,8 +1,9 @@
 const knnClassifier = ml5.KNNClassifier();
 
-let numTrainingSamples = train0.shape[3];
+let numTrainingSamples = train6.shape[3];
 let testingSampleIndex = 0;
 let numTestingSamples = test.shape[3];
+
 let trainingCompleted = false;
 
 function reshapeTensor(tensor4d,sample){
@@ -15,16 +16,17 @@ function Train(){
   console.log("I am being Trained");
   for(i=0; i<numTrainingSamples; i++){
 
-    let features0 = reshapeTensor(train0,i);
-    label = 0;
+    let features0 = reshapeTensor(train6,i);
+    label = 6;
     knnClassifier.addExample(features0.tolist(), label);
 
-    features1 = reshapeTensor(train1,i)
-    label = 1;
+    features1 = reshapeTensor(train8,i)
+    label = 8;
     knnClassifier.addExample(features1.tolist(), label);
   }
 
   trainingCompleted = true;
+  console.log("I am being Tested");
 }
 
 function GotResults(err,result){
@@ -35,7 +37,6 @@ function GotResults(err,result){
 }
 
 function Test(){
-  console.log("I am being Tested");
 
   let currentTestingSample = reshapeTensor(test,testingSampleIndex);
   knnClassifier.classify(currentTestingSample.tolist(),GotResults);
