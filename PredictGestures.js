@@ -14,11 +14,14 @@ function reshapeTensor(tensor4d,sample){
 function Train(){
   console.log("I am being Trained");
   for(i=0; i<numTrainingSamples; i++){
+
     let features = reshapeTensor(train0,i);
-    //console.log(features.toString());
-    label = 1;
+    label = 0;
     knnClassifier.addExample(features.tolist(), label);
 
+    features = reshapeTensor(train1,i)
+    label = 1;
+    knnClassifier.addExample(features.tolist(), label);
   }
 
   trainingCompleted = true;
