@@ -7,11 +7,7 @@ let numTestingSamples = test.shape[3];
 
 let trainingCompleted = false;
 
-function reshapeTensor(tensor4d,sample){
-  let tensor3d = tensor4d.pick(null,null,null,sample);
-  let vector = tensor3d.reshape(tensor3d.size);
-  return vector
-}
+let oneFrameOfData = nj.zeros([5,4,6]);
 
 
 function handleBone(bone,boneType,fingerIdx,InteractionBox){
@@ -32,12 +28,12 @@ function handleBone(bone,boneType,fingerIdx,InteractionBox){
   y2 = normalizedPrevJoint[1]
   z2 = normalizedPrevJoint[2]
 
-  // framesOfData.set(fingerIdx, boneType, 0, currentSample, x2 )
-  // framesOfData.set(fingerIdx, boneType, 1, currentSample, y2 )
-  // framesOfData.set(fingerIdx, boneType, 2, currentSample, z2 )
-  // framesOfData.set(fingerIdx, boneType, 3, currentSample, x1 )
-  // framesOfData.set(fingerIdx, boneType, 4, currentSample, y1 )
-  // framesOfData.set(fingerIdx, boneType, 5, currentSample, z1 )
+  oneFrameOfData.set(fingerIdx, boneType, 0, x2 )
+  oneFrameOfData.set(fingerIdx, boneType, 1, y2 )
+  oneFrameOfData.set(fingerIdx, boneType, 2, z2 )
+  oneFrameOfData.set(fingerIdx, boneType, 3, x1 )
+  oneFrameOfData.set(fingerIdx, boneType, 4, y1 )
+  oneFrameOfData.set(fingerIdx, boneType, 5, z1 )
 
   //scale data for display
   var canvasX1 = window.innerWidth * x1;
@@ -54,9 +50,6 @@ function handleBone(bone,boneType,fingerIdx,InteractionBox){
 
   stroke(color(255-256/5*(boneType+1)));
   line(canvasX1,canvasY1,canvasX2,canvasY2);
-
-
-
 }
 
 function handleHand(hand,InteractionBox){
@@ -78,9 +71,16 @@ function handleHand(hand,InteractionBox){
 
 function handleFrame(frame){
   if(frame.hands.length >= 1){
-
     handleHand(frame.hands[0],frame.interactionBox);
+    console.log(oneFrameOfData.toString())
+    Test();
   }
+}
+
+function reshapeTensor(tensor4d,sample){
+  let tensor3d = tensor4d.pick(null,null,null,sample);
+  let vector = tensor3d.reshape(tensor3d.size);
+  return vector
 }
 
 function Train(){
@@ -125,7 +125,8 @@ Leap.loop(controllerOptions, function(frame){
     Train();
   }
   handleFrame(frame);
-  Test();
+
+
 
 
   //console.log(predictedClassLabels.toString())
