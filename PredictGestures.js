@@ -1,4 +1,5 @@
 const knnClassifier = ml5.KNNClassifier();
+var controllerOptions = {};
 
 let numTrainingSamples = train6.shape[3];
 let testingSampleIndex = 0;
@@ -48,7 +49,7 @@ function Test(){
   }
 }
 
-function draw(){
+Leap.loop(controllerOptions, function(frame){
   clear();
   if(!trainingCompleted){
     Train();
@@ -58,3 +59,4 @@ function draw(){
 
   //console.log(predictedClassLabels.toString())
 }
+);
