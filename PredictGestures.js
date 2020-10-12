@@ -2,13 +2,63 @@ const knnClassifier = ml5.KNNClassifier();
 var controllerOptions = {};
 
 let numTrainingSamples = train6.shape[3];
-let testingSampleIndex = 0;
 let numTestingSamples = test.shape[3];
 
 let trainingCompleted = false;
 
 let oneFrameOfData = nj.zeros([5,4,6]);
 
+let m = 1;
+let n = 0;
+let d = 6;
+
+function runningAvg(c){
+  n++;
+  m = ((n-1)*m+(c==d))/n;
+  return m
+}
+
+function reshapeTensor4d(tensor4d,sample){
+  let tensor3d = tensor4d.pick(null,null,null,sample);
+  let vector = tensor3d.reshape(tensor3d.size);
+  return vector
+}
+
+function reshapeTensor3d(tensor3d){
+  let vector = tensor3d.reshape(tensor3d.size);
+  return vector
+}
+
+function Train(){
+  console.log("I am being Trained");
+  for(i=0; i<numTrainingSamples; i++){
+
+    let features0 = reshapeTensor4d(train6,i);
+    label = 6;
+    knnClassifier.addExample(features0.tolist(), label);
+
+    features1 = reshapeTensor4d(train8,i)
+    label = 8;
+    knnClassifier.addExample(features1.tolist(), label);
+  }
+
+  trainingCompleted = true;
+  console.log("I am being Tested");
+}
+
+function GotResults(err,result){
+  console.log("Prediction: ", parseInt(result.label),"| n = ",n,"| m = ", m);
+  runningAvg(result.label)
+  //predictedClassLabels.set(testingSampleIndex,parseInt(result.label));
+}
+
+function Test(){
+  //console.log(oneFrameOfData.size)
+  let currentTestingSample = reshapeTensor3d(oneFrameOfData);
+  knnClassifier.classify(currentTestingSample.tolist(),GotResults);
+  //console.log(currentTestingSample.toString());
+
+}
 
 function handleBone(bone,boneType,fingerIdx,InteractionBox){
   //console.log(bone);
@@ -72,52 +122,11 @@ function handleHand(hand,InteractionBox){
 function handleFrame(frame){
   if(frame.hands.length >= 1){
     handleHand(frame.hands[0],frame.interactionBox);
-    console.log(oneFrameOfData.toString())
+    //console.log(oneFrameOfData.toString())
     Test();
   }
 }
 
-function reshapeTensor(tensor4d,sample){
-  let tensor3d = tensor4d.pick(null,null,null,sample);
-  let vector = tensor3d.reshape(tensor3d.size);
-  return vector
-}
-
-function Train(){
-  console.log("I am being Trained");
-  for(i=0; i<numTrainingSamples; i++){
-
-    let features0 = reshapeTensor(train6,i);
-    label = 6;
-    knnClassifier.addExample(features0.tolist(), label);
-
-    features1 = reshapeTensor(train8,i)
-    label = 8;
-    knnClassifier.addExample(features1.tolist(), label);
-  }
-
-  trainingCompleted = true;
-  console.log("I am being Tested");
-}
-
-function GotResults(err,result){
-  console.log("Prediction: ", parseInt(result.label));
-  //predictedClassLabels.set(testingSampleIndex,parseInt(result.label));
-
-
-}
-
-function Test(){
-
-  let currentTestingSample = reshapeTensor(test,testingSampleIndex);
-  knnClassifier.classify(currentTestingSample.tolist(),GotResults);
-  //console.log(currentTestingSample.toString());
-
-  testingSampleIndex++;
-  if(testingSampleIndex>=numTestingSamples){
-    testingSampleIndex = 0;
-  }
-}
 
 Leap.loop(controllerOptions, function(frame){
   clear();
