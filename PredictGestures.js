@@ -10,13 +10,8 @@ let oneFrameOfData = nj.zeros([5,4,6]);
 
 let m = 1;
 let n = 0;
-let d = 6;
+let d = 5;
 
-function runningAvg(c){
-  n++;
-  m = ((n-1)*m+(c==d))/n;
-  return m
-}
 
 function reshapeTensor4d(tensor4d,sample){
   let tensor3d = tensor4d.pick(null,null,null,sample);
@@ -33,22 +28,30 @@ function Train(){
   console.log("I am being Trained");
   for(i=0; i<numTrainingSamples; i++){
 
-    let features0 = reshapeTensor4d(train6,i);
-    label = 6;
-    knnClassifier.addExample(features0.tolist(), label);
+    let features5 = reshapeTensor4d(train5,i)
+    knnClassifier.addExample(features5.tolist(), 5);
 
-    features1 = reshapeTensor4d(train8,i)
-    label = 8;
-    knnClassifier.addExample(features1.tolist(), label);
+    let features6 = reshapeTensor4d(train6,i);
+    knnClassifier.addExample(features6.tolist(), 6);
+
+    let features8 = reshapeTensor4d(train8,i)
+    knnClassifier.addExample(features8.tolist(), 8);
+
   }
 
   trainingCompleted = true;
   console.log("I am being Tested");
 }
 
+function runningAvg(c){
+  n++;
+  m = ((n-1)*m+(c==d))/n;
+  return m
+}
+
 function GotResults(err,result){
-  //console.log("Prediction: ", parseInt(result.label),"| n = ",n,"| m = ", m);
-  console.log("Prediction: ", parseInt(result.label));
+  console.log("Prediction: ", parseInt(result.label),"| n = ",n,"| m = ", m);
+  //console.log("Prediction: ", parseInt(result.label));
   runningAvg(result.label)
   //predictedClassLabels.set(testingSampleIndex,parseInt(result.label));
 }
