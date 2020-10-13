@@ -10,7 +10,7 @@ let oneFrameOfData = nj.zeros([5,4,6]);
 
 let m = 1;
 let n = 0;
-let d = 5;
+let d = 9;
 
 
 function reshapeTensor4d(tensor4d,sample){
@@ -28,14 +28,35 @@ function Train(){
   console.log("I am being Trained");
   for(i=0; i<numTrainingSamples; i++){
 
+    let features0 = reshapeTensor4d(train0,i)
+    knnClassifier.addExample(features0.tolist(), 0);
+
+    let features1 = reshapeTensor4d(train1,i)
+    knnClassifier.addExample(features1.tolist(), 1);
+
+    let features2 = reshapeTensor4d(train2,i)
+    knnClassifier.addExample(features2.tolist(), 2);
+
+    let features3 = reshapeTensor4d(train3,i)
+    knnClassifier.addExample(features3.tolist(), 3);
+
+    let features4 = reshapeTensor4d(train4,i)
+    knnClassifier.addExample(features4.tolist(), 4);
+
     let features5 = reshapeTensor4d(train5,i)
     knnClassifier.addExample(features5.tolist(), 5);
 
     let features6 = reshapeTensor4d(train6,i);
     knnClassifier.addExample(features6.tolist(), 6);
 
+    let features7 = reshapeTensor4d(train7,i);
+    knnClassifier.addExample(features7.tolist(), 7);
+
     let features8 = reshapeTensor4d(train8,i)
     knnClassifier.addExample(features8.tolist(), 8);
+
+    let features9 = reshapeTensor4d(train9,i)
+    knnClassifier.addExample(features9.tolist(), 9);
 
   }
 
