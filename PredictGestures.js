@@ -55,7 +55,9 @@ function GotResults(err,result){
 
 function centerData(){
   xValues = oneFrameOfData.slice([],[],[0,6,3])
-  console.log(xValues.shape)
+  currentMean = xValues.mean()
+  horizontalShift = 0.5-currentMean
+  //console.log(horizontalShift)
 }
 
 function Test(){
