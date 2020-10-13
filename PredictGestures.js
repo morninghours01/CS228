@@ -53,31 +53,35 @@ function GotResults(err,result){
   //predictedClassLabels.set(testingSampleIndex,parseInt(result.label));
 }
 
-function centerData(){
-  xValues = oneFrameOfData.slice([],[],[0,6,3])
-  currentMean = xValues.mean()
-  //console.log(currentMean)
-  horizontalShift = 0.5-currentMean
-  //console.log(horizontalShift)
+//warning: extreme code reuse, very awesome
+function centerData(dim){
+  dimValues = oneFrameOfData.slice([],[],[dim,6,3])
+  currentMean = dimValues.mean()
+  //console.log(dim.toString(),":",currentMean)
+  dimShift = 0.5-currentMean
+  //console.log(dimShift)
   for(i=0; i<oneFrameOfData.shape[0]; i++){
     for(j=0; j<oneFrameOfData.shape[1]; j++){
       //x2
-      currentX = oneFrameOfData.get(i, j, 0);
-      shiftedX = currentX + horizontalShift;
-      oneFrameOfData.set(i, j, 0, shiftedX);
+      currentDim = oneFrameOfData.get(i, j, dim);
+      shiftedX = currentDim + dimShift;
+      oneFrameOfData.set(i, j, dim, shiftedX);
       //x1
-      currentX = oneFrameOfData.get(i, j, 3);
-      shiftedX = currentX + horizontalShift;
-      oneFrameOfData.set(i, j, 3, shiftedX);
+      currentDim = oneFrameOfData.get(i, j, dim+3);
+      shiftedX = currentDim + dimShift;
+      oneFrameOfData.set(i, j, dim+3, shiftedX);
     }
   }
-  let shiftedMean = xValues.mean();
-  //console.log(shiftedMean);
+  let shiftedMean = dimValues.mean();
+  //console.log(dim.toString(),":",shiftedMean);
+
 }
 
 function Test(){
   //console.log(oneFrameOfData.size)
-  centerData()
+  centerData(0)
+  centerData(1)
+  centerData(2)
   let currentTestingSample = reshapeTensor3d(oneFrameOfData);
   knnClassifier.classify(currentTestingSample.tolist(),GotResults);
   //console.log(currentTestingSample.toString());
