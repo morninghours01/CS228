@@ -48,7 +48,7 @@ function Train(){
 
 function GotResults(err,result){
   //console.log("Prediction: ", parseInt(result.label),"| n = ",n,"| m = ", m);
-  console.log("Prediction: ", parseInt(result.label));
+  //console.log("Prediction: ", parseInt(result.label));
   runningAvg(result.label)
   //predictedClassLabels.set(testingSampleIndex,parseInt(result.label));
 }
@@ -56,8 +56,23 @@ function GotResults(err,result){
 function centerData(){
   xValues = oneFrameOfData.slice([],[],[0,6,3])
   currentMean = xValues.mean()
+  //console.log(currentMean)
   horizontalShift = 0.5-currentMean
   //console.log(horizontalShift)
+  for(i=0; i<oneFrameOfData.shape[0]; i++){
+    for(j=0; j<oneFrameOfData.shape[1]; j++){
+      //x2
+      currentX = oneFrameOfData.get(i, j, 0);
+      shiftedX = currentX + horizontalShift;
+      oneFrameOfData.set(i, j, 0, shiftedX);
+      //x1
+      currentX = oneFrameOfData.get(i, j, 3);
+      shiftedX = currentX + horizontalShift;
+      oneFrameOfData.set(i, j, 3, shiftedX);
+    }
+  }
+  let shiftedMean = xValues.mean();
+  //console.log(shiftedMean);
 }
 
 function Test(){
