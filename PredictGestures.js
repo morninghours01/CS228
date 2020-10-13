@@ -48,7 +48,7 @@ function Train(){
 
 function GotResults(err,result){
   //console.log("Prediction: ", parseInt(result.label),"| n = ",n,"| m = ", m);
-  //console.log("Prediction: ", parseInt(result.label));
+  console.log("Prediction: ", parseInt(result.label));
   runningAvg(result.label)
   //predictedClassLabels.set(testingSampleIndex,parseInt(result.label));
 }
