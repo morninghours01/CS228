@@ -48,13 +48,19 @@ function Train(){
 
 function GotResults(err,result){
   //console.log("Prediction: ", parseInt(result.label),"| n = ",n,"| m = ", m);
-  console.log("Prediction: ");
+  console.log("Prediction: ", parseInt(result.label));
   runningAvg(result.label)
   //predictedClassLabels.set(testingSampleIndex,parseInt(result.label));
 }
 
+function centerData(){
+  xValues = oneFrameOfData.slice([],[],[0,6,3])
+  console.log(xValues.shape)
+}
+
 function Test(){
   //console.log(oneFrameOfData.size)
+  centerData()
   let currentTestingSample = reshapeTensor3d(oneFrameOfData);
   knnClassifier.classify(currentTestingSample.tolist(),GotResults);
   //console.log(currentTestingSample.toString());
