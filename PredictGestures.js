@@ -48,10 +48,11 @@ function Train(){
 
 function GotResults(err,result){
   //console.log("Prediction: ", parseInt(result.label),"| n = ",n,"| m = ", m);
-  console.log("Prediction: ", parseInt(result.label));
+  //console.log("Prediction: ", parseInt(result.label));
   runningAvg(result.label)
   //predictedClassLabels.set(testingSampleIndex,parseInt(result.label));
 }
+
 //warning: extreme code reuse, very awesome
 function centerData(dim){
   dimValues = oneFrameOfData.slice([],[],[dim,6,3])
@@ -73,6 +74,7 @@ function centerData(dim){
   }
   let shiftedMean = dimValues.mean();
   //console.log(dim.toString(),":",shiftedMean);
+
 }
 
 function Test(){
