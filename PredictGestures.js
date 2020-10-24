@@ -31,14 +31,32 @@ function Train(){
     let features0 = reshapeTensor4d(train0,i)
     knnClassifier.addExample(features0.tolist(), 0);
 
+    let features00 = reshapeTensor4d(train0Wills,i)
+    knnClassifier.addExample(features00.tolist(), 0);
+
     let features1 = reshapeTensor4d(train1,i)
     knnClassifier.addExample(features1.tolist(), 1);
+
+    let features1Mc = reshapeTensor4d(train1McLaughlin,i)
+    knnClassifier.addExample(features1Mc.tolist(), 1);
+
+    let features1Rice = reshapeTensor4d(train1Rice,i)
+    knnClassifier.addExample(features1Rice.tolist(), 1);
+
+    let features1Davis = reshapeTensor4d(train1Davis,i)
+    knnClassifier.addExample(features1Davis.tolist(), 1);
 
     let features2 = reshapeTensor4d(train2,i)
     knnClassifier.addExample(features2.tolist(), 2);
 
+    let features22 = reshapeTensor4d(train2Banaszewski,i)
+    knnClassifier.addExample(features22.tolist(), 2);
+
     let features3 = reshapeTensor4d(train3,i)
     knnClassifier.addExample(features3.tolist(), 3);
+
+    let features33 = reshapeTensor4d(train3Riofrio,i)
+    knnClassifier.addExample(features33.tolist(), 3);
 
     let features4 = reshapeTensor4d(train4,i)
     knnClassifier.addExample(features4.tolist(), 4);
@@ -52,8 +70,14 @@ function Train(){
     let features7 = reshapeTensor4d(train7,i);
     knnClassifier.addExample(features7.tolist(), 7);
 
+    let features77 = reshapeTensor4d(train7Laquerre,i);
+    knnClassifier.addExample(features77.tolist(), 7);
+
     let features8 = reshapeTensor4d(train8,i)
     knnClassifier.addExample(features8.tolist(), 8);
+
+    let features88 = reshapeTensor4d(train8Bongard,i)
+    knnClassifier.addExample(features88.tolist(), 8);
 
     let features9 = reshapeTensor4d(train9,i)
     knnClassifier.addExample(features9.tolist(), 9);
