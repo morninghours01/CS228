@@ -8,7 +8,7 @@ let trainingCompleted = false;
 
 let oneFrameOfData = nj.zeros([5,4,6]);
 
-let programState = 0l
+let programState = 0;
 
 let m = 1;
 let n = 0;
@@ -249,20 +249,53 @@ function handleHand(hand,InteractionBox){
 }
 
 function handleFrame(frame){
-  if(frame.hands.length >= 1){
+  if(frame.hands.length){
     handleHand(frame.hands[0],frame.interactionBox);
     //console.log(oneFrameOfData.toString())
     //Test();
   }
 }
 
+function DrawImageToHelpUserPutTheirHandOverTheDevice(){
 
-Leap.loop(controllerOptions, function(frame){
-  clear();
+}
+
+function TrainKNNIfNotDoneYet(){
   // if(!trainingCompleted){
   //   Train();
   // }
+}
+
+function HandleState0(frame){
+  TrainKNNIfNotDoneYet()
+  DrawImageToHelpUserPutTheirHandOverTheDevice()
+}
+
+function HandleState1(frame){
   handleFrame(frame);
+}
+
+function DetermineState(frame){
+  programState = frame.hands.length;
+  if(programState>1){
+    programState = 1;
+  }
+  console.log(programState)
+}
+
+Leap.loop(controllerOptions, function(frame){
+  clear();
+
+  DetermineState(frame);
+  if(programState==0){
+    HandleState0(frame);
+  }
+  else if (programState==1) {
+    HandleState1(frame);
+  }
+
+
+
 
 
 
