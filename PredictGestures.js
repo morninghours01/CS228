@@ -10,6 +10,10 @@ let oneFrameOfData = nj.zeros([5,4,6]);
 
 let programState = 0;
 
+let centerednessX = 0;
+let centerednessY = 0;
+let centerednessZ = 0;
+
 let m = 1;
 let n = 0;
 let d = 9;
@@ -284,7 +288,14 @@ function HandleState2(frame){
   handleFrame(frame);
 }
 
-function HandIsTooFarToTheLeft()
+function HandIsTooFarToTheDim(dim){
+  if(meanPosition(0) < 0.25){
+    return True;
+  }
+  else {
+    return False;
+  }
+}
 
 function HandIsUncentered(){
 
