@@ -257,7 +257,7 @@ function handleFrame(frame){
 }
 
 function DrawImageToHelpUserPutTheirHandOverTheDevice(){
-
+  image(img, 0, 0)// [width], [height])
 }
 
 function TrainKNNIfNotDoneYet(){
