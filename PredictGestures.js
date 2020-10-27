@@ -10,10 +10,6 @@ let oneFrameOfData = nj.zeros([5,4,6]);
 
 let programState = 0;
 
-let centerednessX = 0;
-let centerednessY = 0;
-let centerednessZ = 0;
-
 let m = 1;
 let n = 0;
 let d = 9;
@@ -161,7 +157,9 @@ function GotResults(err,result){
 function meanPosition(dim){
   let dimValues = oneFrameOfData.slice([],[],[dim,6,3]);
   let currentMean = dimValues.mean();
+  console.log(currentMean);
   return currentMean
+
 }
 
 //warning: extreme code reuse, very awesome
@@ -288,32 +286,79 @@ function HandleState2(frame){
   handleFrame(frame);
 }
 
-function HandIsTooFarToTheDim(dim){
+// X
+function HandTooLeft(){
+  return(meanPosition(0))
   if(meanPosition(0) < 0.25){
-    return True;
+    return true;
   }
   else {
-    return False;
+    return false;
+  }
+}
+
+function HandTooRight(){
+  if(meanPosition(0) < 0.75){
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+// Y
+function HandTooLow(){
+  if(meanPosition(1) < 0.25){
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+function HandTooHigh(){
+  if(meanPosition(1) < 0.75){
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+//Z
+function HandTooClose(){
+  if(meanPosition(2) > 0.25){
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+function HandTooFar(){
+  if(meanPosition(2) < 0.75){
+    return true;
+  }
+  else {
+    return false;
   }
 }
 
 function HandIsUncentered(){
-
+  return(HandTooLeft)
 }
 
 function DetermineState(frame){
   if(!frame.hands.length){
     programState = 0;
   }
-  else if(true){
+  else if(HandIsUncentered()){
      programState = 1;
   }
   else {
     programState = 2;
   }
-
-
-  //console.log(programState)
+  console.log(programState)
 }
 
 Leap.loop(controllerOptions, function(frame){
