@@ -154,10 +154,15 @@ function GotResults(err,result){
   //predictedClassLabels.set(testingSampleIndex,parseInt(result.label));
 }
 
+function meanPosition(dim){
+  let dimValues = oneFrameOfData.slice([],[],[dim,6,3]);
+  let currentMean = dimValues.mean();
+  return currentMean
+}
+
 //warning: extreme code reuse, very awesome
 function centerData(dim){
-  dimValues = oneFrameOfData.slice([],[],[dim,6,3])
-  currentMean = dimValues.mean()
+  currentMean = meanPosition(dim);
   //console.log(dim.toString(),":",currentMean)
   dimShift = 0.5-currentMean
   //console.log(dimShift)
@@ -257,7 +262,7 @@ function handleFrame(frame){
 }
 
 function DrawImageToHelpUserPutTheirHandOverTheDevice(){
-  image(img, 0, 0)// [width], [height])
+  image(img, 0, 0, window.innerWidth/2, window.innerHeight/2)
 }
 
 function TrainKNNIfNotDoneYet(){
@@ -275,12 +280,29 @@ function HandleState1(frame){
   handleFrame(frame);
 }
 
+function HandleState2(frame){
+  handleFrame(frame);
+}
+
+function HandIsTooFarToTheLeft()
+
+function HandIsUncentered(){
+
+}
+
 function DetermineState(frame){
-  programState = frame.hands.length;
-  if(programState>1){
-    programState = 1;
+  if(!frame.hands.length){
+    programState = 0;
   }
-  console.log(programState)
+  else if(true){
+     programState = 1;
+  }
+  else {
+    programState = 2;
+  }
+
+
+  //console.log(programState)
 }
 
 Leap.loop(controllerOptions, function(frame){
@@ -292,6 +314,9 @@ Leap.loop(controllerOptions, function(frame){
   }
   else if (programState==1) {
     HandleState1(frame);
+  }
+  else if (programState == 2){
+    HandleState2(frame);
   }
 
 
