@@ -157,7 +157,7 @@ function GotResults(err,result){
 function meanPosition(dim){
   let dimValues = oneFrameOfData.slice([],[],[dim,6,3]);
   let currentMean = dimValues.mean();
-  console.log(currentMean);
+  //console.log(currentMean);
   return currentMean
 
 }
@@ -259,7 +259,6 @@ function handleFrame(frame){
   if(frame.hands.length){
     handleHand(frame.hands[0],frame.interactionBox);
     //console.log(oneFrameOfData.toString())
-    //Test();
   }
 }
 
@@ -280,15 +279,33 @@ function HandleState0(frame){
 
 function HandleState1(frame){
   handleFrame(frame);
+  if(HandTooLeft()){
+    image(imgTooLeft, window.innerWidth/2, 0,window.innerWidth/2, window.innerHeight/2)
+  }
+  else if(HandTooRight()){
+    image(imgTooRight, window.innerWidth/2, 0,window.innerWidth/2, window.innerHeight/2)
+  }
+  else if(HandTooLow()){
+    image(imgTooLow, window.innerWidth/2, 0,window.innerWidth/2, window.innerHeight/2)
+  }
+  else if(HandTooHigh()){
+    image(imgTooHigh, window.innerWidth/2, 0,window.innerWidth/2, window.innerHeight/2)
+  }
+  else if(HandTooClose()){
+    image(imgTooClose, window.innerWidth/2, 0,window.innerWidth/2, window.innerHeight/2)
+  }
+  else if(HandTooFar()){
+    image(imgtooFar, window.innerWidth/2, 0,window.innerWidth/2, window.innerHeight/2)
+  }
 }
 
 function HandleState2(frame){
   handleFrame(frame);
+  //Test();
 }
 
 // X
 function HandTooLeft(){
-  return(meanPosition(0))
   if(meanPosition(0) < 0.25){
     return true;
   }
@@ -298,7 +315,7 @@ function HandTooLeft(){
 }
 
 function HandTooRight(){
-  if(meanPosition(0) < 0.75){
+  if(meanPosition(0) > 0.75){
     return true;
   }
   else {
@@ -317,7 +334,7 @@ function HandTooLow(){
 }
 
 function HandTooHigh(){
-  if(meanPosition(1) < 0.75){
+  if(meanPosition(1) > 0.75){
     return true;
   }
   else {
@@ -327,7 +344,7 @@ function HandTooHigh(){
 
 //Z
 function HandTooClose(){
-  if(meanPosition(2) > 0.25){
+  if(meanPosition(2) > 0.75){
     return true;
   }
   else {
@@ -336,7 +353,7 @@ function HandTooClose(){
 }
 
 function HandTooFar(){
-  if(meanPosition(2) < 0.75){
+  if(meanPosition(2) < 0.25){
     return true;
   }
   else {
@@ -345,7 +362,9 @@ function HandTooFar(){
 }
 
 function HandIsUncentered(){
-  return(HandTooLeft)
+  return(HandTooLeft() || HandTooRight() ||
+    HandTooLow()|| HandTooHigh() ||
+    HandTooClose() || HandTooFar())
 }
 
 function DetermineState(frame){
@@ -374,7 +393,6 @@ Leap.loop(controllerOptions, function(frame){
   else if (programState == 2){
     HandleState2(frame);
   }
-
 
 
 
