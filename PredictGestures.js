@@ -14,6 +14,11 @@ let m = 1;
 let n = 0;
 let d = 9;
 
+function SignIn(){
+  username = document.getElementById('username').value;
+  console.log(username);
+}
+
 
 function reshapeTensor4d(tensor4d,sample){
   let tensor3d = tensor4d.pick(null,null,null,sample);
@@ -377,7 +382,7 @@ function DetermineState(frame){
   else {
     programState = 2;
   }
-  console.log(programState)
+  //console.log(programState)
 }
 
 Leap.loop(controllerOptions, function(frame){
@@ -393,11 +398,6 @@ Leap.loop(controllerOptions, function(frame){
   else if (programState == 2){
     HandleState2(frame);
   }
-
-
-
-
-
 
   //console.log(predictedClassLabels.toString())
 }
