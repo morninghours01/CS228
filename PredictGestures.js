@@ -25,15 +25,33 @@ function IsNewUser(username,list){
   return usernameFound == false;
 }
 
+function CreateNewUser(username,list){
+  var item = document.createElement('li');
+  item.innerHTML = String(username);
+  list.appendChild(item);
+  item.id = String(username) + "_name";
+
+  var itemSignIns = document.createElement('li');
+  var signIns = 1;
+  itemSignIns.innerHTML = Number(signIns);
+  //console.log(itemSignIns.innerHTML)
+  list.appendChild(itemSignIns);
+  itemSignIns.id = String(username) + "_signins"
+}
+
 
 function SignIn(){
   username = document.getElementById('username').value;
   var list = document.getElementById('users');
   if(IsNewUser(username,list)){
-    var item = document.createElement('li');
-    item.innerHTML = String(username);
-    list.appendChild(item);
+    CreateNewUser(username,list)
   }
+  else {
+    ID = String(username) + "_signins";
+    listItem = document.getElementById( ID );
+    listItem.innerHTML = parseInt(listItem.innerHTML) + 1;
+  }
+
   console.log(list.innerHTML);
   return false;
 }
