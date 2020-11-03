@@ -14,9 +14,23 @@ let m = 1;
 let n = 0;
 let d = 9;
 
+function IsNewUser(username,list){
+  console.log(list);
+}
+
+
 function SignIn(){
   username = document.getElementById('username').value;
-  console.log(username);
+  var list = document.getElementById('users');
+  if(IsNewUser(username,list)){
+  var item = document.createElement('li');
+  item.innerHTML = String(username);
+  list.appendChild(item);
+  }
+  console.log(list.innerHTML);
+  var users = list.children;
+  console.log(users.innerHTML)
+  return false;
 }
 
 
