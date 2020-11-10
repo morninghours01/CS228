@@ -12,6 +12,8 @@ let programState = 0;
 
 let digitToShow = 0;
 
+let timeSinceLastDigitChange = new Date()
+
 let m = 1;
 let n = 0;
 let d = 9;
@@ -343,6 +345,8 @@ function HandleState1(frame){
   }
 }
 
+
+
 function DrawLowerRightPanel(){
   if(digitToShow == 0){
     image(asl0,window.innerWidth/2, window.innerHeight/2, window.innerWidth/2, window.innerHeight/2)
@@ -351,15 +355,25 @@ function DrawLowerRightPanel(){
   else if(digitToShow == 5){
     image(asl5,window.innerWidth/2, window.innerHeight/2, window.innerWidth/2, window.innerHeight/2)
   }
-  
+
 }
 
-function DetermineWhetherToSwitchDigits(){
+function TimeToSwitchDigits(){
+  return false
+}
+
+function SwitchDigits(){
   if(digitToShow == 0){
     digitToShow = 5;
   }
   else {
     digitToShow = 0;
+  }
+}
+
+function DetermineWhetherToSwitchDigits(){
+  if(TimeToSwitchDigits()){
+    SwitchDigits()
   }
 }
 
