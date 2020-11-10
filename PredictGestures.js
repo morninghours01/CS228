@@ -16,7 +16,7 @@ let timeSinceLastDigitChange = new Date()
 
 let m = 1;
 let n = 0;
-let d = 9;
+//let d = 9;
 
 function IsNewUser(username,list){
   var users = list.children;
@@ -187,16 +187,17 @@ function Train(){
   console.log("I am being Tested");
 }
 
-function runningAvg(c){
+function runningAvg(c,d){
   n++;
   m = ((n-1)*m+(c==d))/n;
   return m
 }
 
 function GotResults(err,result){
-  //console.log("Prediction: ", parseInt(result.label),"| n = ",n,"| m = ", m);
+  runningAvg(result.label,digitToShow)
+  console.log("Prediction: ", parseInt(result.label),"| n = ",n,"| m = ", m);
   console.log("Prediction: ", parseInt(result.label));
-  runningAvg(result.label)
+
   //predictedClassLabels.set(testingSampleIndex,parseInt(result.label));
 }
 
