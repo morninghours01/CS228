@@ -210,6 +210,7 @@ function meanPosition(dim){
 
 //warning: extreme code reuse, very awesome
 function centerData(dim){
+  let dimValues = oneFrameOfData.slice([],[],[dim,6,3]);
   currentMean = meanPosition(dim);
   //console.log(dim.toString(),":",currentMean)
   dimShift = 0.5-currentMean
@@ -313,9 +314,9 @@ function DrawImageToHelpUserPutTheirHandOverTheDevice(){
 }
 
 function TrainKNNIfNotDoneYet(){
-  // if(!trainingCompleted){
-  //   Train();
-  // }
+  if(!trainingCompleted){
+    Train();
+  }
 }
 
 function HandleState0(frame){
@@ -362,7 +363,8 @@ function TimeToSwitchDigits(){
   let currentTime = new Date();
   let elapsedInMilliseconds = currentTime - timeSinceLastDigitChange;
   let elapsedInSeconds = elapsedInMilliseconds/1000;
-  if(elapsedInSeconds>1){
+
+  if(elapsedInSeconds > 5){
     return true;
   }
   else{
@@ -391,7 +393,7 @@ function HandleState2(frame){
   DetermineWhetherToSwitchDigits()
   DrawLowerRightPanel()
 
-  //Test();
+  Test();
 }
 
 // X
