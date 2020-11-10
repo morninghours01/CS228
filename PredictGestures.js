@@ -344,7 +344,9 @@ function HandleState1(frame){
 }
 
 function DrawLowerRightPanel(){
-  image(asl0,window.innerWidth/2, window.innerHeight/2, window.innerWidth/2, window.innerHeight/2)
+  if(digitToShow == 0){
+    image(asl0,window.innerWidth/2, window.innerHeight/2, window.innerWidth/2, window.innerHeight/2)
+  }
 }
 
 function HandleState2(frame){
