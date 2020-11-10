@@ -14,6 +14,8 @@ let digitToShow = 0;
 
 let timeSinceLastDigitChange = new Date()
 
+let switchingTime = 8;
+
 let m = 1;
 let n = 0;
 //let d = 9;
@@ -195,7 +197,7 @@ function runningAvg(c,d){
 
 function GotResults(err,result){
   runningAvg(result.label,digitToShow)
-  console.log("Prediction: ", parseInt(result.label),"| n = ",n,"| m = ", m);
+  console.log("Prediction: ", parseInt(result.label),"| Mean Accurace: ", m);
   console.log("Prediction: ", parseInt(result.label));
 
   //predictedClassLabels.set(testingSampleIndex,parseInt(result.label));
@@ -282,7 +284,7 @@ function handleBone(bone,boneType,fingerIdx,InteractionBox){
 
   strokeWeight(2*(16-4*boneType));
 
-  stroke(color(255-256/5*(boneType+1)));
+  stroke((1-m)*(255-256/5*(boneType+1)), m*(255-256/5*(boneType+1)),0);
   line(canvasX1,canvasY1,canvasX2,canvasY2);
 }
 
@@ -360,19 +362,6 @@ function DrawLowerRightPanel(){
 
 }
 
-function TimeToSwitchDigits(){
-  let currentTime = new Date();
-  let elapsedInMilliseconds = currentTime - timeSinceLastDigitChange;
-  let elapsedInSeconds = elapsedInMilliseconds/1000;
-
-  if(elapsedInSeconds > 5){
-    return true;
-  }
-  else{
-    return false;
-  }
-}
-
 function SwitchDigits(){
   if(digitToShow == 0){
     digitToShow = 5;
@@ -381,6 +370,20 @@ function SwitchDigits(){
     digitToShow = 0;
   }
   timeSinceLastDigitChange = new Date()
+  n = 0;
+}
+
+function TimeToSwitchDigits(){
+  let currentTime = new Date();
+  let elapsedInMilliseconds = currentTime - timeSinceLastDigitChange;
+  let elapsedInSeconds = elapsedInMilliseconds/1000;
+
+  if(elapsedInSeconds > switchingTime){
+    return true;
+  }
+  else{
+    return false;
+  }
 }
 
 function DetermineWhetherToSwitchDigits(){
