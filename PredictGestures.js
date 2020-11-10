@@ -10,6 +10,8 @@ let oneFrameOfData = nj.zeros([5,4,6]);
 
 let programState = 0;
 
+let digitToShow = 0;
+
 let m = 1;
 let n = 0;
 let d = 9;
@@ -337,12 +339,19 @@ function HandleState1(frame){
     image(imgTooClose, window.innerWidth/2, 0,window.innerWidth/2, window.innerHeight/2)
   }
   else if(HandTooFar()){
-    image(imgtooFar, window.innerWidth/2, 0,window.innerWidth/2, window.innerHeight/2)
+    image(imgtooFar, window.innerWidth/2, 0, window.innerWidth/2, window.innerHeight/2)
   }
+}
+
+function DrawLowerRightPanel(){
+  image(asl0,window.innerWidth/2, window.innerHeight/2, window.innerWidth/2, window.innerHeight/2)
 }
 
 function HandleState2(frame){
   handleFrame(frame);
+
+  DrawLowerRightPanel()
+
   //Test();
 }
 

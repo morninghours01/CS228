@@ -8,7 +8,8 @@ function setup() {
   imgTooLeft = loadImage("https://i.imgur.com/BJausMK.jpg");
   imgtooFar = loadImage("https://i.imgur.com/Xt3R2Jc.jpg");
   imgTooHigh = loadImage("https://i.imgur.com/wEk5Zke.jpg");
-
+  asl0 = loadImage("https://i.imgur.com/sH1hKOH.jpg")
+  asl5 = loadImage("https://i.imgur.com/G89r4Hc.jpg")
 
 
 }
