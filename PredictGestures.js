@@ -347,11 +347,25 @@ function DrawLowerRightPanel(){
   if(digitToShow == 0){
     image(asl0,window.innerWidth/2, window.innerHeight/2, window.innerWidth/2, window.innerHeight/2)
   }
+
+  else if(digitToShow == 5){
+    image(asl5,window.innerWidth/2, window.innerHeight/2, window.innerWidth/2, window.innerHeight/2)
+  }
+  
+}
+
+function DetermineWhetherToSwitchDigits(){
+  if(digitToShow == 0){
+    digitToShow = 5;
+  }
+  else {
+    digitToShow = 0;
+  }
 }
 
 function HandleState2(frame){
   handleFrame(frame);
-
+  DetermineWhetherToSwitchDigits()
   DrawLowerRightPanel()
 
   //Test();
