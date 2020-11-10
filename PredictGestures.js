@@ -359,7 +359,15 @@ function DrawLowerRightPanel(){
 }
 
 function TimeToSwitchDigits(){
-  return false
+  let currentTime = new Date();
+  let elapsedInMilliseconds = currentTime - timeSinceLastDigitChange;
+  let elapsedInSeconds = elapsedInMilliseconds/1000;
+  if(elapsedInSeconds>1){
+    return true;
+  }
+  else{
+    return false;
+  }
 }
 
 function SwitchDigits(){
@@ -369,6 +377,7 @@ function SwitchDigits(){
   else {
     digitToShow = 0;
   }
+  timeSinceLastDigitChange = new Date()
 }
 
 function DetermineWhetherToSwitchDigits(){
