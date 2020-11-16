@@ -432,25 +432,10 @@ function HandTooFar(){
 }
 
 function HandIsUncentered(){
-  if(HandTooLeft()){
-    return true;
+  if(HandTooLeft() || HandTooRight() || HandTooLow()||
+  HandTooHigh() || HandTooClose() || HandTooFar()){
+    return(true)
   }
-  else if(HandTooRight()){
-    return true;
-  }
-  else if(HandTooLow()){
-    return true;
-  }
-  else if(HandTooHigh()){
-    return true;
-  }
-  else if(HandTooClose()){
-    return true;
-  }
-  else if(HandTooFar()){
-    return true;
-  }
-  else return false;
 }
 
 
