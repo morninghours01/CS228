@@ -16,6 +16,8 @@ let timeSinceLastDigitChange = new Date()
 
 let switchingTime = 8;
 
+let testAllHands;
+
 let m = 1;
 let n = 0;
 //let d = 9;
@@ -197,8 +199,8 @@ function runningAvg(c,d){
 
 function GotResults(err,result){
   runningAvg(result.label,digitToShow)
-  console.log("Prediction: ", parseInt(result.label),"| Mean Accurace: ", m);
-  console.log("Prediction: ", parseInt(result.label));
+  //console.log("Prediction: ", parseInt(result.label),"| Mean Accurace: ", m);
+  //console.log("Prediction: ", parseInt(result.label));
 
   //predictedClassLabels.set(testingSampleIndex,parseInt(result.label));
 }
@@ -213,7 +215,6 @@ function meanPosition(dim){
 
 //warning: extreme code reuse, very awesome
 function centerData(dim){
-  let dimValues = oneFrameOfData.slice([],[],[dim,6,3]);
   currentMean = meanPosition(dim);
   //console.log(dim.toString(),":",currentMean)
   dimShift = 0.5-currentMean
@@ -230,7 +231,7 @@ function centerData(dim){
       oneFrameOfData.set(i, j, dim+3, shiftedX);
     }
   }
-  let shiftedMean = dimValues.mean();
+  //let shiftedMean = dimValues.mean();
   //console.log(dim.toString(),":",shiftedMean);
 
 }
@@ -362,6 +363,82 @@ function DrawLowerRightPanel(){
 
 }
 
+// X
+function HandTooLeft(){
+  if(meanPosition(0) < 0.25){
+    console.log("too left")
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+function HandTooRight(){
+  if(meanPosition(0) > 0.75){
+    console.log("too right")
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+// Y
+function HandTooLow(){
+  if(meanPosition(1) < 0.25){
+    console.log("too low")
+    return true;
+
+  }
+  else {
+    return false;
+  }
+}
+
+function HandTooHigh(){
+  if(meanPosition(1) > 0.75){
+    console.log("too high")
+    return true;
+
+  }
+  else {
+    return false;
+  }
+}
+
+//Z
+function HandTooClose(){
+  if(meanPosition(2) > 0.75){
+    console.log("too close")
+    return true;
+
+  }
+  else {
+    return false;
+  }
+}
+
+function HandTooFar(){
+  if(meanPosition(2) < 0.25){
+    console.log("too far")
+    return true;
+
+  }
+  else {
+    return false;
+  }
+
+}
+
+function HandIsUncentered(){
+  if(HandTooLeft() || HandTooRight() || HandTooLow()||
+  HandTooHigh() || HandTooClose() || HandTooFar()){
+    return(true)
+  }
+}
+
+
 function SwitchDigits(){
   if(digitToShow == 0){
     digitToShow = 5;
@@ -369,8 +446,8 @@ function SwitchDigits(){
   else {
     digitToShow = 0;
   }
-  timeSinceLastDigitChange = new Date()
-  n = 0;
+
+
 }
 
 function TimeToSwitchDigits(){
@@ -388,7 +465,11 @@ function TimeToSwitchDigits(){
 
 function DetermineWhetherToSwitchDigits(){
   if(TimeToSwitchDigits()){
-    SwitchDigits()
+    if(m > 0.85){
+      SwitchDigits()
+    }
+  n=0;
+  timeSinceLastDigitChange = new Date()
   }
 }
 
@@ -396,71 +477,7 @@ function HandleState2(frame){
   handleFrame(frame);
   DetermineWhetherToSwitchDigits()
   DrawLowerRightPanel()
-
   Test();
-}
-
-// X
-function HandTooLeft(){
-  if(meanPosition(0) < 0.25){
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
-function HandTooRight(){
-  if(meanPosition(0) > 0.75){
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
-// Y
-function HandTooLow(){
-  if(meanPosition(1) < 0.25){
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
-function HandTooHigh(){
-  if(meanPosition(1) > 0.75){
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
-//Z
-function HandTooClose(){
-  if(meanPosition(2) > 0.75){
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
-function HandTooFar(){
-  if(meanPosition(2) < 0.25){
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
-function HandIsUncentered(){
-  return(HandTooLeft() || HandTooRight() ||
-    HandTooLow()|| HandTooHigh() ||
-    HandTooClose() || HandTooFar())
 }
 
 function DetermineState(frame){
@@ -473,7 +490,7 @@ function DetermineState(frame){
   else {
     programState = 2;
   }
-  //console.log(programState)
+  console.log(programState)
 }
 
 Leap.loop(controllerOptions, function(frame){
@@ -489,7 +506,6 @@ Leap.loop(controllerOptions, function(frame){
   else if (programState == 2){
     HandleState2(frame);
   }
-
   //console.log(predictedClassLabels.toString())
 }
 );
