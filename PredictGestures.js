@@ -7,6 +7,7 @@ let numTestingSamples = test.shape[3];
 let trainingCompleted = false;
 
 let oneFrameOfData = nj.zeros([5,4,6]);
+let oneFrameCentered = nj.zeros([5,4,6]);
 
 let programState = 0;
 
@@ -219,16 +220,18 @@ function centerData(dim){
   //console.log(dim.toString(),":",currentMean)
   dimShift = 0.5-currentMean
   //console.log(dimShift)
-  for(i=0; i<oneFrameOfData.shape[0]; i++){
-    for(j=0; j<oneFrameOfData.shape[1]; j++){
+  oneFrameCentered = oneFrameOfData.clone()
+
+  for(i=0; i<oneFrameCentered.shape[0]; i++){
+    for(j=0; j<oneFrameCentered.shape[1]; j++){
       //x2
-      currentDim = oneFrameOfData.get(i, j, dim);
+      currentDim = oneFrameCentered.get(i, j, dim);
       shiftedX = currentDim + dimShift;
-      oneFrameOfData.set(i, j, dim, shiftedX);
+      oneFrameCentered.set(i, j, dim, shiftedX);
       //x1
-      currentDim = oneFrameOfData.get(i, j, dim+3);
+      currentDim = oneFrameCentered.get(i, j, dim+3);
       shiftedX = currentDim + dimShift;
-      oneFrameOfData.set(i, j, dim+3, shiftedX);
+      oneFrameCentered.set(i, j, dim+3, shiftedX);
     }
   }
   //let shiftedMean = dimValues.mean();
@@ -241,7 +244,7 @@ function Test(){
   centerData(0)
   centerData(1)
   centerData(2)
-  let currentTestingSample = reshapeTensor3d(oneFrameOfData);
+  let currentTestingSample = reshapeTensor3d(oneFrameCentered);
   knnClassifier.classify(currentTestingSample.tolist(),GotResults);
   //console.log(currentTestingSample.toString());
 
