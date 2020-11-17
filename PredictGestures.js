@@ -15,7 +15,7 @@ let digitToShow = 0;
 
 let timeSinceLastDigitChange = new Date()
 
-let switchingTime = 8;
+let switchingTime = 5;
 
 let testAllHands;
 
@@ -359,11 +359,9 @@ function DrawLowerRightPanel(){
   if(digitToShow == 0){
     image(asl0,window.innerWidth/2, window.innerHeight/2, window.innerWidth/2, window.innerHeight/2)
   }
-
   else if(digitToShow == 5){
     image(asl5,window.innerWidth/2, window.innerHeight/2, window.innerWidth/2, window.innerHeight/2)
   }
-
 }
 
 // X
@@ -392,7 +390,6 @@ function HandTooLow(){
   if(meanPosition(1) < 0.25){
     console.log("too low")
     return true;
-
   }
   else {
     return false;
@@ -403,7 +400,6 @@ function HandTooHigh(){
   if(meanPosition(1) > 0.75){
     console.log("too high")
     return true;
-
   }
   else {
     return false;
@@ -415,7 +411,6 @@ function HandTooClose(){
   if(meanPosition(2) > 0.75){
     console.log("too close")
     return true;
-
   }
   else {
     return false;
@@ -426,12 +421,10 @@ function HandTooFar(){
   if(meanPosition(2) < 0.25){
     console.log("too far")
     return true;
-
   }
   else {
     return false;
   }
-
 }
 
 function HandIsUncentered(){
