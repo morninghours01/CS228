@@ -14,13 +14,27 @@ let programState = 0;
 let digitToShow = 0;
 
 let timeSinceLastDigitChange = new Date()
+let digitChanged = true;
 
 let switchingTime = 5;
 
 let testAllHands;
 
+let handImageX = 3*window.innerWidth/4;
+let handImageY = window.innerHeight/2;
+let handImageHeight = window.innerWidth/4;
+let handImageWidth = window.innerHeight/2;
+
+let numberPromptX = window.innerWidth/2;
+let numberPromptY = window.innerHeight/2;
+let numberPromptSize = 300;
+let promptingTime = switchingTime;
+let keepPrompting = true;
+
 let m = 1;
 let n = 0;
+
+let successChart = nj.zeros(10);
 //let d = 9;
 
 function IsNewUser(username,list){
@@ -124,14 +138,17 @@ function Train(){
     knnClassifier.addExample(features33.tolist(), 3);
 
 
-    let features4 = reshapeTensor4d(train4,i);
-    knnClassifier.addExample(features4.tolist(), 4);
+    // let features4 = reshapeTensor4d(train4,i);
+    // knnClassifier.addExample(features4.tolist(), 4);
 
     let features44 = reshapeTensor4d(train4Kiely,i);
     knnClassifier.addExample(features44.tolist(), 4);
 
     let features444 = reshapeTensor4d(train4Beattie,i);
     knnClassifier.addExample(features444.tolist(), 4);
+
+    let features4444 = reshapeTensor4d(train4Liu,i);
+    knnClassifier.addExample(features4444.tolist(), 4);
 
 
     let features5 = reshapeTensor4d(train5,i);
@@ -201,7 +218,7 @@ function runningAvg(c,d){
 function GotResults(err,result){
   runningAvg(result.label,digitToShow)
   //console.log("Prediction: ", parseInt(result.label),"| Mean Accurace: ", m);
-  //console.log("Prediction: ", parseInt(result.label));
+  console.log("Prediction: ", parseInt(result.label));
 
   //predictedClassLabels.set(testingSampleIndex,parseInt(result.label));
 }
@@ -236,7 +253,6 @@ function centerData(dim){
   }
   //let shiftedMean = dimValues.mean();
   //console.log(dim.toString(),":",shiftedMean);
-
 }
 
 function Test(){
@@ -353,21 +369,54 @@ function HandleState1(frame){
   }
 }
 
-
+function promptDigit(imageToShow){
+  textSize(300);
+  strokeWeight(0)
+  fill(50);
+  textAlign(LEFT,TOP);
+  text(digitToShow.toString(), numberPromptX, numberPromptY)
+  if(keepPrompting){
+    image(imageToShow, handImageX, handImageY, handImageWidth, handImageHeight)
+  }
+}
 
 function DrawLowerRightPanel(){
   if(digitToShow == 0){
-    image(asl0,window.innerWidth/2, window.innerHeight/2, window.innerWidth/2, window.innerHeight/2)
+    promptDigit(asl0);
+  }
+  else if(digitToShow == 1){
+    promptDigit(asl1);
+  }
+  else if(digitToShow == 2){
+    promptDigit(asl2);
+  }
+  else if(digitToShow == 3){
+    promptDigit(asl3);
+  }
+  else if(digitToShow == 4){
+    promptDigit(asl4);
   }
   else if(digitToShow == 5){
-    image(asl5,window.innerWidth/2, window.innerHeight/2, window.innerWidth/2, window.innerHeight/2)
+    promptDigit(asl5);
+  }
+  else if(digitToShow == 6){
+    promptDigit(asl6);
+  }
+  else if(digitToShow == 7){
+    promptDigit(asl7);
+  }
+  else if(digitToShow == 8){
+    promptDigit(asl8);
+  }
+  else{
+    promptDigit(asl9);
   }
 }
 
 // X
 function HandTooLeft(){
   if(meanPosition(0) < 0.25){
-    console.log("too left")
+    //console.log("too left")
     return true;
   }
   else {
@@ -377,7 +426,7 @@ function HandTooLeft(){
 
 function HandTooRight(){
   if(meanPosition(0) > 0.75){
-    console.log("too right")
+    //console.log("too right")
     return true;
   }
   else {
@@ -388,7 +437,7 @@ function HandTooRight(){
 // Y
 function HandTooLow(){
   if(meanPosition(1) < 0.25){
-    console.log("too low")
+    //console.log("too low")
     return true;
   }
   else {
@@ -398,7 +447,7 @@ function HandTooLow(){
 
 function HandTooHigh(){
   if(meanPosition(1) > 0.75){
-    console.log("too high")
+    //console.log("too high")
     return true;
   }
   else {
@@ -409,7 +458,7 @@ function HandTooHigh(){
 //Z
 function HandTooClose(){
   if(meanPosition(2) > 0.75){
-    console.log("too close")
+    //console.log("too close")
     return true;
   }
   else {
@@ -419,7 +468,7 @@ function HandTooClose(){
 
 function HandTooFar(){
   if(meanPosition(2) < 0.25){
-    console.log("too far")
+    //console.log("too far")
     return true;
   }
   else {
@@ -436,20 +485,29 @@ function HandIsUncentered(){
 
 
 function SwitchDigits(){
-  if(digitToShow == 0){
-    digitToShow = 5;
+  // digitToShow = digitToShow + 1
+  // if(digitToShow = 9){
+  //   digitToShow = 0
+  // }
+  if(digitToShow == 4){
+    digitToShow = 6
   }
-  else {
-    digitToShow = 0;
+  else{
+    digitToShow = 4
   }
-
-
 }
 
 function TimeToSwitchDigits(){
   let currentTime = new Date();
   let elapsedInMilliseconds = currentTime - timeSinceLastDigitChange;
   let elapsedInSeconds = elapsedInMilliseconds/1000;
+
+  if(elapsedInSeconds < promptingTime && digitChanged){
+      keepPrompting = true;
+  }
+  else{
+      keepPrompting = false;
+  }
 
   if(elapsedInSeconds > switchingTime){
     return true;
@@ -462,7 +520,13 @@ function TimeToSwitchDigits(){
 function DetermineWhetherToSwitchDigits(){
   if(TimeToSwitchDigits()){
     if(m > 0.85){
+      successChart.set(digitToShow,(successChart.get(digitToShow)+1))
       SwitchDigits()
+      digitChanged = true;
+      promptingTime = switchingTime - successChart.get(digitToShow)
+    }
+    else{
+      digitChanged = false;
     }
   n=0;
   timeSinceLastDigitChange = new Date()
@@ -479,14 +543,16 @@ function HandleState2(frame){
 function DetermineState(frame){
   if(!frame.hands.length){
     programState = 0;
+    digitChanged = true;
   }
   else if(HandIsUncentered()){
      programState = 1;
+     digitChanged = true;
   }
   else {
     programState = 2;
   }
-  console.log(programState)
+  //console.log(programState)
 }
 
 Leap.loop(controllerOptions, function(frame){
@@ -502,6 +568,6 @@ Leap.loop(controllerOptions, function(frame){
   else if (programState == 2){
     HandleState2(frame);
   }
-  //console.log(predictedClassLabels.toString())
+  console.log(successChart.toString())
 }
 );

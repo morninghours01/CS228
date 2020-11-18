@@ -9,7 +9,13 @@ function setup() {
   imgtooFar = loadImage("https://i.imgur.com/Xt3R2Jc.jpg");
   imgTooHigh = loadImage("https://i.imgur.com/wEk5Zke.jpg");
   asl0 = loadImage("https://i.imgur.com/sH1hKOH.jpg")
+  asl1 = loadImage("https://i.imgur.com/vkf44kr.jpg")
+  asl2 = loadImage("https://i.imgur.com/DF6j2rk.jpg")
+  asl3 = loadImage("https://i.imgur.com/EoNqeeV.jpg")
+  asl4 = loadImage("https://i.imgur.com/jlliNxX.jpg")
   asl5 = loadImage("https://i.imgur.com/G89r4Hc.jpg")
-
-
+  asl6 = loadImage("https://i.imgur.com/0L8xs3H.jpg")
+  asl7 = loadImage("https://i.imgur.com/4bY4CBr.jpg")
+  asl8 = loadImage("https://i.imgur.com/Lg2D4X4.jpg")
+  asl9 = loadImage("https://i.imgur.com/NZ2VlRd.jpg")
 }
