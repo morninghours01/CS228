@@ -13,10 +13,9 @@ let oneFrameCentered = nj.zeros([5,4,6]);
 
 let programState = 0;
 
-let digitToShow = 9;
+let digitToShow = 8;
 
 let timeSinceLastDigitChange = new Date()
-let digitChanged = true;
 
 let switchingTime = 5;
 
@@ -492,7 +491,7 @@ function SwitchDigits(){
   //   digitToShow = 0
   // }
   if(digitToShow == 5){
-    digitToShow = 9;
+    digitToShow = 8;
   }
   else{
     digitToShow = 5;
@@ -504,7 +503,9 @@ function TimeToSwitchDigits(){
   let elapsedInMilliseconds = currentTime - timeSinceLastDigitChange;
   let elapsedInSeconds = elapsedInMilliseconds/1000;
 
-  if(elapsedInSeconds < promptingTime && digitChanged){
+  switchingTime =
+
+  if(elapsedInSeconds < promptingTime ){
       keepPrompting = true;
   }
   else{
@@ -521,14 +522,9 @@ function TimeToSwitchDigits(){
 
 function DetermineWhetherToSwitchDigits(){
   if(TimeToSwitchDigits()){
-    if(m > 0.85){
-      successChart.set(digitToShow,(successChart.get(digitToShow)+1))
-      SwitchDigits()
-      digitChanged = true;
-      promptingTime = switchingTime - successChart.get(digitToShow)
-    }
-    else{
-      digitChanged = false;
+    successChart.set(digitToShow, m)
+    SwitchDigits()
+    promptingTime = 10 * (1 - 2*successChart.get(digitToShow))
     }
   n=0;
   timeSinceLastDigitChange = new Date()
@@ -545,11 +541,9 @@ function HandleState2(frame){
 function DetermineState(frame){
   if(!frame.hands.length){
     programState = 0;
-    digitChanged = true;
   }
   else if(HandIsUncentered()){
      programState = 1;
-     digitChanged = true;
   }
   else {
     programState = 2;
