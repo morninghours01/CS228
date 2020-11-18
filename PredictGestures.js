@@ -1,6 +1,8 @@
 const knnClassifier = ml5.KNNClassifier();
 var controllerOptions = {};
 
+nj.config.printThreshold = 1000;
+
 let numTrainingSamples = train6.shape[3];
 let numTestingSamples = test.shape[3];
 
@@ -11,7 +13,7 @@ let oneFrameCentered = nj.zeros([5,4,6]);
 
 let programState = 0;
 
-let digitToShow = 0;
+let digitToShow = 9;
 
 let timeSinceLastDigitChange = new Date()
 let digitChanged = true;
@@ -31,7 +33,7 @@ let numberPromptSize = 300;
 let promptingTime = switchingTime;
 let keepPrompting = true;
 
-let m = 1;
+let m = 0;
 let n = 0;
 
 let successChart = nj.zeros(10);
@@ -218,7 +220,7 @@ function runningAvg(c,d){
 function GotResults(err,result){
   runningAvg(result.label,digitToShow)
   //console.log("Prediction: ", parseInt(result.label),"| Mean Accurace: ", m);
-  console.log("Prediction: ", parseInt(result.label));
+  //console.log("Prediction: ", parseInt(result.label));
 
   //predictedClassLabels.set(testingSampleIndex,parseInt(result.label));
 }
@@ -489,11 +491,11 @@ function SwitchDigits(){
   // if(digitToShow = 9){
   //   digitToShow = 0
   // }
-  if(digitToShow == 4){
-    digitToShow = 6
+  if(digitToShow == 5){
+    digitToShow = 9;
   }
   else{
-    digitToShow = 4
+    digitToShow = 5;
   }
 }
 
