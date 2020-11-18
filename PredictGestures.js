@@ -13,11 +13,12 @@ let oneFrameCentered = nj.zeros([5,4,6]);
 
 let programState = 0;
 
-let digitToShow = 8;
+let digitToShow = 0;
 
 let timeSinceLastDigitChange = new Date()
 
-let switchingTime = 5;
+let baseTime = 6
+let switchingTime = baseTime;
 
 let testAllHands;
 
@@ -29,14 +30,13 @@ let handImageWidth = window.innerHeight/2;
 let numberPromptX = window.innerWidth/2;
 let numberPromptY = window.innerHeight/2;
 let numberPromptSize = 300;
-let promptingTime = switchingTime;
+let promptingTime = baseTime;
 let keepPrompting = true;
 
 let m = 0;
 let n = 0;
 
 let successChart = nj.zeros(10);
-//let d = 9;
 
 function IsNewUser(username,list){
   var users = list.children;
@@ -486,24 +486,19 @@ function HandIsUncentered(){
 
 
 function SwitchDigits(){
-  // digitToShow = digitToShow + 1
-  // if(digitToShow = 9){
-  //   digitToShow = 0
-  // }
-  if(digitToShow == 5){
-    digitToShow = 8;
+
+  for(i=9; i>=0; i--){
+    if(successChart.get(i) == successChart.min()){
+      minIdx = i
+    }
   }
-  else{
-    digitToShow = 5;
-  }
+  digitToShow = minIdx
 }
 
 function TimeToSwitchDigits(){
   let currentTime = new Date();
   let elapsedInMilliseconds = currentTime - timeSinceLastDigitChange;
   let elapsedInSeconds = elapsedInMilliseconds/1000;
-
-  switchingTime =
 
   if(elapsedInSeconds < promptingTime ){
       keepPrompting = true;
@@ -524,10 +519,10 @@ function DetermineWhetherToSwitchDigits(){
   if(TimeToSwitchDigits()){
     successChart.set(digitToShow, m)
     SwitchDigits()
-    promptingTime = 10 * (1 - 2*successChart.get(digitToShow))
-    }
-  n=0;
-  timeSinceLastDigitChange = new Date()
+    promptingTime = baseTime * (1 - 1.25*successChart.get(digitToShow))
+    switchingTime = baseTime * (1 - successChart.get(digitToShow)^4)
+    n=0;
+    timeSinceLastDigitChange = new Date()
   }
 }
 
@@ -564,6 +559,6 @@ Leap.loop(controllerOptions, function(frame){
   else if (programState == 2){
     HandleState2(frame);
   }
-  console.log(successChart.toString())
+  //console.log(successChart.toString())
 }
 );
