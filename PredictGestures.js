@@ -7,7 +7,6 @@ let numTrainingSamples = train6.shape[3];
 let numTestingSamples = test.shape[3];
 
 let trainingCompleted = false;
-let loadingIdx = 0;
 
 let oneFrameOfData = nj.zeros([5,4,6]);
 let oneFrameCentered = nj.zeros([5,4,6]);
@@ -17,6 +16,7 @@ let programState = 0;
 let digitToShow = 0;
 
 let timeSinceLastDigitChange = new Date()
+let elapsedInSeconds = 0;
 
 let baseTime = 6;
 let switchingTime = 6;
@@ -34,16 +34,6 @@ let numberPromptY = window.innerHeight/2;
 let numberPromptSize = 300;
 let promptingTime = 6;
 let keepPrompting = true;
-
-//constants for lower left panel
-let panelWidth = window.innerWidth/2;
-let panelHeight = window.innerHeight/2;
-let divisionOfPanel = panelWidth/12;
-let barHeight = panelHeight/2;
-let barWidth = divisionOfPanel/4;
-let barY = panelHeight + panelHeight*1/4
-let barLabelY = barY+barHeight+window.innerWidth/100
-
 
 //constants for accuracy
 let m = 0;
@@ -216,12 +206,7 @@ function Train(){
 
     let features9999 = reshapeTensor4d(train9JClark,i);
     knnClassifier.addExample(features9999.tolist(), 9);
-    clear;
-    image(loading[loadingIdx],window.innerWidth/4,window.innerHeight/4,window.innerWidth/2,window.innerHeight/2);
-    loadingIdx++;
-    if(loadingIdx > 5){
-      loadingIdx = 0;
-    }
+
 
   }
 
@@ -353,7 +338,6 @@ function handleFrame(frame){
 }
 
 function DrawImageToHelpUserPutTheirHandOverTheDevice(){
-
   image(img, 0, 0, window.innerWidth/2, window.innerHeight/2)
 }
 
@@ -433,11 +417,24 @@ function DrawLowerRightPanel(){
   }
 }
 
-function DrawLowerLeftPanel(){
-  fill(255);
+//constants for lower left panel
+let panelWidth = window.innerWidth/2;
+let panelHeight = window.innerHeight/2;
+let divisionOfPanel = panelWidth/12;
+let barHeight = panelHeight/2;
+let barWidth = divisionOfPanel/4;
+let barY = panelHeight + panelHeight*1/4
+let barLabelY = barY+barHeight+window.innerWidth/100
 
+let timeBarY = panelHeight*17/16;
+let timeBarHeight = panelHeight/32
+
+function DrawLowerLeftPanel(){
+  fill(0);
   strokeWeight(1);
-  //rect(0,panelHeight,panelWidth,panelHeight,)
+
+  rect(0,timeBarY, panelWidth*(1-elapsedInSeconds/switchingTime),timeBarHeight)
+
   textAlign(LEFT,TOP);
   textSize(30)
   for(i=0; i<10; i++){
@@ -547,7 +544,7 @@ function SwitchDigits(){
 function TimeToSwitchDigits(){
   let currentTime = new Date();
   let elapsedInMilliseconds = currentTime - timeSinceLastDigitChange;
-  let elapsedInSeconds = elapsedInMilliseconds/1000;
+  elapsedInSeconds = elapsedInMilliseconds/1000;
 
   if(elapsedInSeconds < promptingTime ){
       keepPrompting = true;
