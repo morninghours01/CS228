@@ -7,6 +7,7 @@ let numTrainingSamples = train6.shape[3];
 let numTestingSamples = test.shape[3];
 
 let trainingCompleted = false;
+let loadingIdx = 0;
 
 let oneFrameOfData = nj.zeros([5,4,6]);
 let oneFrameCentered = nj.zeros([5,4,6]);
@@ -203,6 +204,12 @@ function Train(){
 
     let features9999 = reshapeTensor4d(train9JClark,i);
     knnClassifier.addExample(features9999.tolist(), 9);
+    clear;
+    image(loading[loadingIdx],window.innerWidth/4,window.innerHeight/4,window.innerWidth/2,window.innerHeight/2);
+    loadingIdx++;
+    if(loadingIdx > 5){
+      loadingIdx = 0;
+    }
 
   }
 
@@ -334,6 +341,7 @@ function handleFrame(frame){
 }
 
 function DrawImageToHelpUserPutTheirHandOverTheDevice(){
+
   image(img, 0, 0, window.innerWidth/2, window.innerHeight/2)
 }
 
@@ -344,7 +352,6 @@ function TrainKNNIfNotDoneYet(){
 }
 
 function HandleState0(frame){
-  TrainKNNIfNotDoneYet()
   DrawImageToHelpUserPutTheirHandOverTheDevice()
 }
 
@@ -542,12 +549,12 @@ function DetermineState(frame){
   else {
     programState = 2;
   }
-  //console.log(programState)
+  console.log(programState)
 }
 
 Leap.loop(controllerOptions, function(frame){
   clear();
-
+  TrainKNNIfNotDoneYet()
   DetermineState(frame);
   if(programState==0){
     HandleState0(frame);
