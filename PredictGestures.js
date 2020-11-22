@@ -458,7 +458,7 @@ function DrawLowerLeftPanel(){
     rect((1+i)*divisionOfPanel, barY, barWidth, barHeight)
 
   }
-
+  rect(0,timeBarY, panelWidth,timeBarHeight)
 }
 
 // X
