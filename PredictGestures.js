@@ -23,17 +23,29 @@ let switchingTime = 6;
 
 let testAllHands;
 
+// constants for lower right panel
 let handImageX = 3*window.innerWidth/4;
 let handImageY = window.innerHeight/2;
 let handImageHeight = window.innerWidth/4;
 let handImageWidth = window.innerHeight/2;
 
-let numberPromptX = window.innerWidth/2;
+let numberPromptX = window.innerWidth/2+window.innerWidth/8;
 let numberPromptY = window.innerHeight/2;
 let numberPromptSize = 300;
 let promptingTime = 6;
 let keepPrompting = true;
 
+//constants for lower left panel
+let panelWidth = window.innerWidth/2;
+let panelHeight = window.innerHeight/2;
+let divisionOfPanel = panelWidth/12;
+let barHeight = panelHeight/2;
+let barWidth = divisionOfPanel/4;
+let barY = panelHeight + panelHeight*1/4
+let barLabelY = barY+barHeight+window.innerWidth/100
+
+
+//constants for accuracy
 let m = 0;
 let n = 0;
 
@@ -381,7 +393,7 @@ function promptDigit(imageToShow){
   textSize(300);
   strokeWeight(0)
   fill(50);
-  textAlign(LEFT,TOP);
+  textAlign(CENTER,TOP);
   text(digitToShow.toString(), numberPromptX, numberPromptY)
   if(keepPrompting){
     image(imageToShow, handImageX, handImageY, handImageWidth, handImageHeight)
@@ -419,6 +431,37 @@ function DrawLowerRightPanel(){
   else{
     promptDigit(asl9);
   }
+}
+
+function DrawLowerLeftPanel(){
+  fill(255);
+
+  strokeWeight(1);
+  //rect(0,panelHeight,panelWidth,panelHeight,)
+  textAlign(LEFT,TOP);
+  textSize(30)
+  for(i=0; i<10; i++){
+    if(i == digitToShow){
+      stroke((1-m)*(255), m*(255),0);
+      fill((1-m)*(255), m*(255),0);
+      rect((1+i)*divisionOfPanel, barY+(1-m)*barHeight, barWidth, m*barHeight)
+      text(i,(1+i)*divisionOfPanel,barLabelY)
+    }
+    else{
+      localM = successChart.get(i)
+      stroke((1-localM)*(255), localM*(255),0);
+      fill((1-localM)*(255), localM*(255),0);
+      rect((1+i)*divisionOfPanel, barY+(1-localM)*barHeight, barWidth, localM*barHeight)
+      stroke(0);
+      fill(0);
+      text(i,(1+i)*divisionOfPanel,barLabelY)
+    }
+    stroke(0,0,0);
+    noFill();
+    rect((1+i)*divisionOfPanel, barY, barWidth, barHeight)
+
+  }
+
 }
 
 // X
@@ -535,7 +578,6 @@ function DetermineWhetherToSwitchDigits(){
 function HandleState2(frame){
   handleFrame(frame);
   DetermineWhetherToSwitchDigits()
-  DrawLowerRightPanel()
   Test();
 }
 
@@ -565,6 +607,8 @@ Leap.loop(controllerOptions, function(frame){
   else if (programState == 2){
     HandleState2(frame);
   }
+  DrawLowerRightPanel();
+  DrawLowerLeftPanel();
   //console.log(successChart.toString())
 }
 );
