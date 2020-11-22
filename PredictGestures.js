@@ -17,8 +17,8 @@ let digitToShow = 0;
 
 let timeSinceLastDigitChange = new Date()
 
-let baseTime = 6
-let switchingTime = baseTime;
+let baseTime = 6;
+let switchingTime = 6;
 
 let testAllHands;
 
@@ -30,7 +30,7 @@ let handImageWidth = window.innerHeight/2;
 let numberPromptX = window.innerWidth/2;
 let numberPromptY = window.innerHeight/2;
 let numberPromptSize = 300;
-let promptingTime = baseTime;
+let promptingTime = 6;
 let keepPrompting = true;
 
 let m = 0;
@@ -486,7 +486,6 @@ function HandIsUncentered(){
 
 
 function SwitchDigits(){
-
   for(i=9; i>=0; i--){
     if(successChart.get(i) == successChart.min()){
       minIdx = i
@@ -519,8 +518,8 @@ function DetermineWhetherToSwitchDigits(){
   if(TimeToSwitchDigits()){
     successChart.set(digitToShow, m)
     SwitchDigits()
-    promptingTime = baseTime * (1 - 1.25*successChart.get(digitToShow))
-    switchingTime = baseTime * (1 - successChart.get(digitToShow)^4)
+    promptingTime = baseTime * (1 - 1.25*successChart.get(digitToShow));
+    switchingTime = baseTime * (1 - 0.8*successChart.get(digitToShow));
     n=0;
     timeSinceLastDigitChange = new Date()
   }
