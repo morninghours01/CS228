@@ -18,8 +18,8 @@ let digitToShow = 0;
 let timeSinceLastDigitChange = new Date()
 let elapsedInSeconds = 0;
 
-let baseTime = 6;
-let switchingTime = 6;
+let baseTime = 10;
+let switchingTime = baseTime;
 
 let testAllHands;
 
@@ -32,7 +32,7 @@ let handImageWidth = window.innerHeight/2;
 let numberPromptX = window.innerWidth/2+window.innerWidth/8;
 let numberPromptY = window.innerHeight/2;
 let numberPromptSize = 300;
-let promptingTime = 6;
+let promptingTime = baseTime;
 let keepPrompting = true;
 
 //constants for accuracy
@@ -349,6 +349,7 @@ function TrainKNNIfNotDoneYet(){
 
 function HandleState0(frame){
   DrawImageToHelpUserPutTheirHandOverTheDevice()
+  DrawUpperRightPerformance();
 }
 
 function HandleState1(frame){
@@ -423,42 +424,58 @@ let panelHeight = window.innerHeight/2;
 let divisionOfPanel = panelWidth/12;
 let barHeight = panelHeight/2;
 let barWidth = divisionOfPanel/4;
-let barY = panelHeight + panelHeight*1/4
+let barY = panelHeight*1/4
 let barLabelY = barY+barHeight+window.innerWidth/100
 
-let timeBarY = panelHeight*17/16;
+let timeBarY = panelHeight*1/16;
 let timeBarHeight = panelHeight/32
 
-function DrawLowerLeftPanel(){
+function DrawDynamicProgressBar(accuracy){
+  stroke((1-accuracy)*(255), accuracy*(255),0);
+  fill((1-accuracy)*(255), accuracy*(255),0);
+  rect(panelWidth+(1+i)*divisionOfPanel, barY+(1-accuracy)*barHeight, barWidth, accuracy*barHeight)
+  stroke(0);
+  noFill();
+  //draw bounding rectangle
+  rect(panelWidth+(1+i)*divisionOfPanel, barY, barWidth, barHeight);
+  //draw threshold marker and mark accordingly
+  if(accuracy>0.85){
+    fill(0,150,255);
+  }
+  else{
+    fill(255,0,0);
+  }
+  stroke(0);
+  rect(panelWidth+(1+i)*divisionOfPanel-2, barY+(1-0.85)*barHeight, barWidth+4, 4)
+}
+
+function DrawUpperRightPerformance(){
   fill(0);
   strokeWeight(1);
 
-  rect(0,timeBarY, panelWidth*(1-elapsedInSeconds/switchingTime),timeBarHeight)
+  rect(panelWidth+4,timeBarY, panelWidth*(1-elapsedInSeconds/switchingTime)-8,timeBarHeight)
 
   textAlign(LEFT,TOP);
   textSize(30)
   for(i=0; i<10; i++){
     if(i == digitToShow){
+      DrawDynamicProgressBar(m)
       stroke((1-m)*(255), m*(255),0);
       fill((1-m)*(255), m*(255),0);
-      rect((1+i)*divisionOfPanel, barY+(1-m)*barHeight, barWidth, m*barHeight)
-      text(i,(1+i)*divisionOfPanel,barLabelY)
+      text(i,panelWidth+(1+i)*divisionOfPanel,barLabelY)
     }
     else{
-      localM = successChart.get(i)
-      stroke((1-localM)*(255), localM*(255),0);
-      fill((1-localM)*(255), localM*(255),0);
-      rect((1+i)*divisionOfPanel, barY+(1-localM)*barHeight, barWidth, localM*barHeight)
-      stroke(0);
+      let localM = successChart.get(i)
+      DrawDynamicProgressBar(localM)
       fill(0);
-      text(i,(1+i)*divisionOfPanel,barLabelY)
+      text(i,panelWidth+(1+i)*divisionOfPanel,barLabelY)
     }
-    stroke(0,0,0);
-    noFill();
-    rect((1+i)*divisionOfPanel, barY, barWidth, barHeight)
+
 
   }
-  rect(0,timeBarY, panelWidth,timeBarHeight)
+  noFill()
+  stroke(0);
+  rect(panelWidth+4,timeBarY, panelWidth-8,timeBarHeight)
 }
 
 // X
@@ -565,8 +582,8 @@ function DetermineWhetherToSwitchDigits(){
   if(TimeToSwitchDigits()){
     successChart.set(digitToShow, m)
     SwitchDigits()
-    promptingTime = baseTime * (1 - 1.25*successChart.get(digitToShow));
-    switchingTime = baseTime * (1 - 0.8*successChart.get(digitToShow));
+    //promptingTime = baseTime * (1 - 1.25*successChart.get(digitToShow));
+    //4switchingTime = baseTime * (1 - 0.8*successChart.get(digitToShow));
     n=0;
     timeSinceLastDigitChange = new Date()
   }
