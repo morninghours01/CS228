@@ -574,7 +574,9 @@ function DetermineWhetherToSwitchDigits(){
 
 function HandleState2(frame){
   handleFrame(frame);
-  DetermineWhetherToSwitchDigits()
+  DrawLowerRightPanel();
+  DrawUpperRightPerformance();
+  DetermineWhetherToSwitchDigits();
   Test();
 }
 
@@ -604,8 +606,6 @@ Leap.loop(controllerOptions, function(frame){
   else if (programState == 2){
     HandleState2(frame);
   }
-  DrawLowerRightPanel();
-  DrawLowerLeftPanel();
   //console.log(successChart.toString())
 }
 );
