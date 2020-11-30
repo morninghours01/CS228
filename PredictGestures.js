@@ -433,6 +433,7 @@ let barLabelY = barY+barHeight+window.innerWidth/100
 let timeBarY = panelHeight*1/16;
 let timeBarHeight = panelHeight/32
 
+
 function DrawDynamicProgressBar(accuracy){
   stroke((1-accuracy)*(255), accuracy*(255),0);
   fill((1-accuracy)*(255), accuracy*(255),0);
@@ -452,12 +453,18 @@ function DrawDynamicProgressBar(accuracy){
   rect(panelWidth+(1+i)*divisionOfPanel-2, barY+(1-levelUpThreshold)*barHeight-4, barWidth+4, 4)
 }
 
+
 function DrawUpperRightPerformance(){
+
+  //time bar
   fill(0);
   strokeWeight(1);
-
-  rect(panelWidth+4,timeBarY, panelWidth*(1-elapsedInSeconds/switchingTime)-8,timeBarHeight)
-
+  stroke(0);
+  dynamicBarWidth = panelWidth*(1-elapsedInSeconds/switchingTime)-8;
+  if(dynamicBarWidth<0){
+    dynamicBarWidth = 0
+  }
+  rect(panelWidth+4, timeBarY, dynamicBarWidth, timeBarHeight)
 
   textAlign(CENTER,TOP);
   textSize(30)
@@ -478,7 +485,6 @@ function DrawUpperRightPerformance(){
     }
 
     DrawDynamicProgressBar(localM)
-
   }
   noFill()
   stroke(0);
@@ -555,6 +561,7 @@ function HandIsUncentered(){
   }
 }
 
+
 function DetermineWhetherToLevelUp(){
   if(successChart.min() > levelUpThreshold){
     level++;
@@ -607,6 +614,7 @@ function DetermineWhetherToLevelUp(){
   }
 }
 
+
 function SwitchDigits(){
   for(i=9; i>=0; i--){
     if(successChart.get(i) == successChart.min()){
@@ -615,6 +623,7 @@ function SwitchDigits(){
   }
   digitToShow = minIdx
 }
+
 
 function TimeToSwitchDigits(){
   let currentTime = new Date();
@@ -636,17 +645,19 @@ function TimeToSwitchDigits(){
   }
 }
 
+
 function DetermineWhetherToSwitchDigits(){
   if(TimeToSwitchDigits()){
+    timeSinceLastDigitChange = new Date()
     successChart.set(digitToShow, m)
     DetermineWhetherToLevelUp()
     SwitchDigits()
     //promptingTime = baseTime * (1 - 1.25*successChart.get(digitToShow));
     //switchingTime = baseTime * (1 - 0.8*successChart.get(digitToShow));
     n=0;
-    timeSinceLastDigitChange = new Date()
   }
 }
+
 
 function HandleState2(frame){
   handleFrame(frame);
@@ -655,6 +666,7 @@ function HandleState2(frame){
   DetermineWhetherToSwitchDigits();
   Test();
 }
+
 
 function DetermineState(frame){
   if(!frame.hands.length){
@@ -666,8 +678,9 @@ function DetermineState(frame){
   else {
     programState = 2;
   }
-  console.log(programState)
+  //console.log(programState)
 }
+
 
 Leap.loop(controllerOptions, function(frame){
   clear();
