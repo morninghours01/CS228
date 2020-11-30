@@ -35,9 +35,12 @@ let numberPromptSize = 300;
 let promptingTime = baseTime;
 let keepPrompting = true;
 
+let level = 0;
+let levelUpThreshold = 0.85;
 //constants for accuracy
 let m = 0;
 let n = 0;
+let localM = 0;
 
 let successChart = nj.zeros(10);
 
@@ -439,14 +442,14 @@ function DrawDynamicProgressBar(accuracy){
   //draw bounding rectangle
   rect(panelWidth+(1+i)*divisionOfPanel, barY, barWidth, barHeight);
   //draw threshold marker and mark accordingly
-  if(accuracy>0.85){
+  if(accuracy>levelUpThreshold){
     fill(0,150,255);
   }
   else{
     fill(255,0,0);
   }
   stroke(0);
-  rect(panelWidth+(1+i)*divisionOfPanel-2, barY+(1-0.85)*barHeight, barWidth+4, 4)
+  rect(panelWidth+(1+i)*divisionOfPanel-2, barY+(1-levelUpThreshold)*barHeight-4, barWidth+4, 4)
 }
 
 function DrawUpperRightPerformance(){
@@ -455,22 +458,26 @@ function DrawUpperRightPerformance(){
 
   rect(panelWidth+4,timeBarY, panelWidth*(1-elapsedInSeconds/switchingTime)-8,timeBarHeight)
 
-  textAlign(LEFT,TOP);
+
+  textAlign(CENTER,TOP);
   textSize(30)
+  text('Level ' + level, panelWidth*3/2, 2*timeBarY)
+
+  textAlign(LEFT,TOP);
   for(i=0; i<10; i++){
     if(i == digitToShow){
-      DrawDynamicProgressBar(m)
+      localM = m
       stroke((1-m)*(255), m*(255),0);
       fill((1-m)*(255), m*(255),0);
       text(i,panelWidth+(1+i)*divisionOfPanel,barLabelY)
     }
     else{
-      let localM = successChart.get(i)
-      DrawDynamicProgressBar(localM)
+      localM = successChart.get(i)
       fill(0);
       text(i,panelWidth+(1+i)*divisionOfPanel,barLabelY)
     }
 
+    DrawDynamicProgressBar(localM)
 
   }
   noFill()
@@ -548,6 +555,57 @@ function HandIsUncentered(){
   }
 }
 
+function DetermineWhetherToLevelUp(){
+  if(successChart.min() > levelUpThreshold){
+    level++;
+    successChart = nj.zeros(10);
+  }
+  //institute level parameters
+  switch (level) {
+    case 0:
+        switchingTime = 10;
+        promptingTime = 10;
+        levelUpThreshold = 0.85;
+      break;
+
+    case 1:
+        switchingTime = 8;
+        promptingTime = 4;
+        levelUpThreshold = 0.75;
+      break;
+
+    case 2:
+        switchingTime = 6;
+        promptingTime = 3;
+        levelUpThreshold = 0.7;
+      break;
+
+    case 3:
+        switchingTime = 6;
+        promptingTime = 2;
+        levelUpThreshold = 0.7;
+      break;
+
+    case 4:
+        switchingTime = 8;
+        promptingTime = 0;
+        levelUpThreshold = 0.8;
+
+    case 5:
+        switchingTime = 3;
+        promptingTime = 1;
+        levelUpThreshold = 0.6;
+
+    case 6:
+        switchingTime = 3;
+        promptingTime = 0;
+        levelUpThreshold = 0.6;
+
+    default:
+      switchingTime = 10;
+      promptingTime = 5;
+  }
+}
 
 function SwitchDigits(){
   for(i=9; i>=0; i--){
@@ -581,9 +639,10 @@ function TimeToSwitchDigits(){
 function DetermineWhetherToSwitchDigits(){
   if(TimeToSwitchDigits()){
     successChart.set(digitToShow, m)
+    DetermineWhetherToLevelUp()
     SwitchDigits()
     //promptingTime = baseTime * (1 - 1.25*successChart.get(digitToShow));
-    //4switchingTime = baseTime * (1 - 0.8*successChart.get(digitToShow));
+    //switchingTime = baseTime * (1 - 0.8*successChart.get(digitToShow));
     n=0;
     timeSinceLastDigitChange = new Date()
   }
