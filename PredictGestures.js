@@ -86,6 +86,14 @@ function CreateNewUser(username,list){
 }
 
 
+function GetOtherUserTiming(){
+  let listedTimes = document.querySelectorAll('*[id$="averageSuccessTime"]');
+  for(k=0; k<2;k ++){
+    console.log(listedTimes[k].innerHTML)
+  }
+}
+
+
 function SignIn(){
   username = document.getElementById('username').value;
   list = document.getElementById('users');
@@ -100,7 +108,7 @@ function SignIn(){
     prevAverageSuccessTime = parseFloat(document.getElementById( ID ).innerHTML);
   }
   console.log(list.innerHTML);
-
+  GetOtherUserTiming()
   return false;
 }
 
@@ -593,7 +601,7 @@ function DrawCompareToOthers(){
   fill(0);
   textAlign(CENTER,TOP);
   textSize(15);
-  text("Avg. time to reach 65% on each digit\n compared to other users' best time",
+  text("Avg. time to reach 65% on each digit\n compared to the average of all users' times.",
     panelWidth*1/4, panelHeight*(17/16))
 }
 
@@ -606,7 +614,7 @@ function DrawLowerLeftPanel(){
     DrawDifferenceBar(textCompareLastSession,prevAverageSuccessTime,panelWidth*3/4)
   }
   if(otherTimeToCompare){
-    textCompareOtherUsers = "Avg. time to reach 65% on each digit\n compared to other users' best time";
+    textCompareOtherUsers = "Avg. time to reach 65% on each digit\n compared to the average of all users' times.";
     DrawDifferenceBar(textCompareOtherUsers,otherTimeToCompare,panelWidth*1/4)
   }
 }
