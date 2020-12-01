@@ -47,7 +47,10 @@ let lastFrameAccuracy = 0;
 
 let successChart = nj.zeros(10);
 let timingChart = nj.zeros(10);
+let averageTimeToSuccessThreshold;
+let prevAverageTime = null;
 
+let list;
 
 function IsNewUser(username,list){
   var users = list.children;
@@ -63,21 +66,28 @@ function IsNewUser(username,list){
 function CreateNewUser(username,list){
   var item = document.createElement('li');
   item.innerHTML = String(username);
-  list.appendChild(item);
   item.id = String(username) + "_name";
+  list.appendChild(item);
 
   var itemSignIns = document.createElement('li');
   var signIns = 1;
   itemSignIns.innerHTML = Number(signIns);
+  itemSignIns.id = String(username) + "_signins"
   //console.log(itemSignIns.innerHTML)
   list.appendChild(itemSignIns);
-  itemSignIns.id = String(username) + "_signins"
+
+  var itemAvgSuccessTime = document.createElement('li');
+  itemAvgSuccessTime.innerHTML = "";
+  itemAvgSuccessTime.id = String(username) + "_averageSuccessTime"
+  //console.log(itemSignIns.innerHTML)
+  list.appendChild(itemAvgSuccessTime);
+
 }
 
 
 function SignIn(){
   username = document.getElementById('username').value;
-  var list = document.getElementById('users');
+  list = document.getElementById('users');
   if(IsNewUser(username,list)){
     CreateNewUser(username,list)
   }
@@ -85,9 +95,11 @@ function SignIn(){
     ID = String(username) + "_signins";
     listItem = document.getElementById( ID );
     listItem.innerHTML = parseInt(listItem.innerHTML) + 1;
+    ID = String(username) + "_averageSuccessTime";
+    prevAverageTime = document.getElementById( ID );
   }
-
   console.log(list.innerHTML);
+
   return false;
 }
 
@@ -506,17 +518,57 @@ function RecordTimeToSuccessThreshold(){
 }
 
 function ComputeAvgSuccessTime(){
-  runningSumOfTimes = 0;
+  let runningSumOfTimes = 0;
+  let numSuccesses = 0;
   for(i=0; i<10; i++){
-    if(successChart.get[i] > successThreshold){
-      runningSumOfTimes += timingChart.get[i]
+
+    if(successChart.get(i) > successThreshold){
+      runningSumOfTimes += timingChart.get(i)
+      numSuccesses++
     }
   }
+  averageTimeToSuccessThreshold = runningSumOfTimes/numSuccesses
+}
+
+
+function AddAvgSuccessTimeToList(){
+  ID = String(username) + "_averageSuccessTime";
+  //only modify the list item if a user has signed in: boot up bug
+  if( document.getElementById( ID ) && averageTimeToSuccessThreshold){
+    let listAvgTime = document.getElementById( ID );
+    listAvgTime.innerHTML = averageTimeToSuccessThreshold;
+  }
+}
+
+function DrawCompareToLastTime(){
+  stroke(0);
+  strokeWeight(0);
+  fill(0);
+  textAlign(CENTER,TOP);
+  textSize(15);
+  text("Time to reach 65% on a digit\n compared to your last time",
+    panelWidth*3/4, panelHeight*(9/8))
+}
+
+function DrawCompareToOthers(){
+  stroke(0);
+  strokeWeight(0);
+  fill(0);
+  textAlign(CENTER,TOP);
+  textSize(15);
+  text("Time to reach 65% on a digit\n compared to other users's best time",
+    panelWidth*1/4, panelHeight*(9/8))
 }
 
 function DrawLowerLeftPanel(){
   RecordTimeToSuccessThreshold();
   ComputeAvgSuccessTime();
+  AddAvgSuccessTimeToList();
+  if(prevAverageTime){
+    DrawCompareToLastTime();
+  }
+  DrawCompareToOthers();
+
 }
 
 
