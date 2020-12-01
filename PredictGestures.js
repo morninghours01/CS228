@@ -49,6 +49,7 @@ let successChart = nj.zeros(10);
 let timingChart = nj.zeros(10);
 let averageTimeToSuccessThreshold;
 let prevAverageSuccessTime = null;
+let otherTimeToCompare = null;
 
 let list;
 
@@ -96,7 +97,7 @@ function SignIn(){
     listItem = document.getElementById( ID );
     listItem.innerHTML = parseInt(listItem.innerHTML) + 1;
     ID = String(username) + "_averageSuccessTime";
-    prevAverageSuccessTime = document.getElementById( ID );
+    prevAverageSuccessTime = parseFloat(document.getElementById( ID ).innerHTML);
   }
   console.log(list.innerHTML);
 
@@ -540,32 +541,49 @@ function AddAvgSuccessTimeToList(){
   }
 }
 
-let lastTimeBarCenterX = panelWidth*3/4
-let lastTimeBarCenterY = panelHeight*3/2
+let diffBarCenterY = panelHeight*3/2
 let diffBarHeight = panelHeight/4
 let diffBarWidth = panelHeight/24
 
-function DrawCompareToLastTime(){
-  let successTimeDifference = averageTimeToSuccessThreshold - prevAverageSuccessTime
-  let differencePercent = successTimeDifference/5
-  stroke(0);
-  strokeWeight(1);
-  fill(255);
-  rect(lastTimeBarCenterX-diffBarWidth/2, lastTimeBarCenterY,
-    diffBarWidth, diffBarHeight*differencePercent)
-
-
+function DrawDifferenceBar(displayText, timeToCompare, diffBarCenterX){
   stroke(0);
   strokeWeight(0);
   fill(0);
   textAlign(CENTER,TOP);
   textSize(15);
-  text("Time to reach 65% on a digit\n compared to your last session",
-    lastTimeBarCenterX, panelHeight*(17/16))
+  text(displayText,
+    diffBarCenterX, panelHeight*(17/16))
+
+  let successTimeDifference = timeToCompare-averageTimeToSuccessThreshold
+  let differencePercent = successTimeDifference/5
+  let percentColorScaling = (differencePercent+1)/2
+
+  stroke(0);
+  strokeWeight(1);
+  fill(255*(1-percentColorScaling), 255*(percentColorScaling), 0);
+  rect(diffBarCenterX-diffBarWidth/2, diffBarCenterY,
+    diffBarWidth, diffBarHeight*differencePercent)
 
   strokeWeight(2);
-  line(lastTimeBarCenterX-panelWidth/16, lastTimeBarCenterY,
-    lastTimeBarCenterX+panelWidth/16, lastTimeBarCenterY)
+  line(diffBarCenterX-panelWidth/16, diffBarCenterY,
+    diffBarCenterX+panelWidth/16, diffBarCenterY);
+
+  //last session static text
+  textAlign(LEFT,CENTER)
+  stroke(0);
+  strokeWeight(0);
+  fill(0);
+  text(" " + timeToCompare.toPrecision(3) + 's',
+    diffBarCenterX+panelWidth/16, diffBarCenterY)
+
+  //current session moving text
+  textAlign(RIGHT,CENTER)
+  stroke(0);
+  strokeWeight(0);
+  fill(255*(1-percentColorScaling), 255*(percentColorScaling), 0);
+  text(averageTimeToSuccessThreshold.toPrecision(3) + 's ',
+    diffBarCenterX-panelWidth/16,diffBarCenterY
+    + differencePercent*diffBarHeight)
 }
 
 
@@ -575,7 +593,7 @@ function DrawCompareToOthers(){
   fill(0);
   textAlign(CENTER,TOP);
   textSize(15);
-  text("Time to reach 65% on a digit\n compared to other users' best time",
+  text("Avg. time to reach 65% on each digit\n compared to other users' best time",
     panelWidth*1/4, panelHeight*(17/16))
 }
 
@@ -584,10 +602,13 @@ function DrawLowerLeftPanel(){
   ComputeAvgSuccessTime();
   AddAvgSuccessTimeToList();
   if(prevAverageSuccessTime){
-    DrawCompareToLastTime();
+    textCompareLastSession = "Avg. time to reach 65% on each digit\n compared to your last session";
+    DrawDifferenceBar(textCompareLastSession,prevAverageSuccessTime,panelWidth*3/4)
   }
-  DrawCompareToOthers();
-
+  if(otherTimeToCompare){
+    textCompareOtherUsers = "Avg. time to reach 65% on each digit\n compared to other users' best time";
+    DrawDifferenceBar(textCompareOtherUsers,otherTimeToCompare,panelWidth*1/4)
+  }
 }
 
 
