@@ -48,7 +48,7 @@ let lastFrameAccuracy = 0;
 let successChart = nj.zeros(10);
 let timingChart = nj.zeros(10);
 let averageTimeToSuccessThreshold;
-let prevAverageTime = null;
+let prevAverageSuccessTime = null;
 
 let list;
 
@@ -96,7 +96,7 @@ function SignIn(){
     listItem = document.getElementById( ID );
     listItem.innerHTML = parseInt(listItem.innerHTML) + 1;
     ID = String(username) + "_averageSuccessTime";
-    prevAverageTime = document.getElementById( ID );
+    prevAverageSuccessTime = document.getElementById( ID );
   }
   console.log(list.innerHTML);
 
@@ -540,15 +540,34 @@ function AddAvgSuccessTimeToList(){
   }
 }
 
+let lastTimeBarCenterX = panelWidth*3/4
+let lastTimeBarCenterY = panelHeight*3/2
+let diffBarHeight = panelHeight/4
+let diffBarWidth = panelHeight/24
+
 function DrawCompareToLastTime(){
+  let successTimeDifference = averageTimeToSuccessThreshold - prevAverageSuccessTime
+  let differencePercent = successTimeDifference/5
+  stroke(0);
+  strokeWeight(1);
+  fill(255);
+  rect(lastTimeBarCenterX-diffBarWidth/2, lastTimeBarCenterY,
+    diffBarWidth, diffBarHeight*differencePercent)
+
+
   stroke(0);
   strokeWeight(0);
   fill(0);
   textAlign(CENTER,TOP);
   textSize(15);
-  text("Time to reach 65% on a digit\n compared to your last time",
-    panelWidth*3/4, panelHeight*(9/8))
+  text("Time to reach 65% on a digit\n compared to your last session",
+    lastTimeBarCenterX, panelHeight*(17/16))
+
+  strokeWeight(2);
+  line(lastTimeBarCenterX-panelWidth/16, lastTimeBarCenterY,
+    lastTimeBarCenterX+panelWidth/16, lastTimeBarCenterY)
 }
+
 
 function DrawCompareToOthers(){
   stroke(0);
@@ -556,15 +575,15 @@ function DrawCompareToOthers(){
   fill(0);
   textAlign(CENTER,TOP);
   textSize(15);
-  text("Time to reach 65% on a digit\n compared to other users's best time",
-    panelWidth*1/4, panelHeight*(9/8))
+  text("Time to reach 65% on a digit\n compared to other users' best time",
+    panelWidth*1/4, panelHeight*(17/16))
 }
 
 function DrawLowerLeftPanel(){
   RecordTimeToSuccessThreshold();
   ComputeAvgSuccessTime();
   AddAvgSuccessTimeToList();
-  if(prevAverageTime){
+  if(prevAverageSuccessTime){
     DrawCompareToLastTime();
   }
   DrawCompareToOthers();
