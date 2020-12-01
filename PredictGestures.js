@@ -37,12 +37,17 @@ let keepPrompting = true;
 
 let level = 0;
 let levelUpThreshold = 0.85;
+let successThreshold = 0.65;
+let timeToSuccessThreshold = switchingTime;
 //constants for accuracy
 let m = 0;
 let n = 0;
 let localM = 0;
+let lastFrameAccuracy = 0;
 
 let successChart = nj.zeros(10);
+let timingChart = nj.zeros(10);
+
 
 function IsNewUser(username,list){
   var users = list.children;
@@ -491,6 +496,30 @@ function DrawUpperRightPerformance(){
   rect(panelWidth+4,timeBarY, panelWidth-8,timeBarHeight)
 }
 
+
+function RecordTimeToSuccessThreshold(){
+      if(lastFrameAccuracy < successThreshold && m > successThreshold){
+        let successTime = new Date()
+        timeToSuccessThreshold = (successTime - timeSinceLastDigitChange)/1000
+        timingChart.set(digitToShow,timeToSuccessThreshold);
+      }
+}
+
+function ComputeAvgSuccessTime(){
+  runningSumOfTimes = 0;
+  for(i=0; i<10; i++){
+    if(successChart.get[i] > successThreshold){
+      runningSumOfTimes += timingChart.get[i]
+    }
+  }
+}
+
+function DrawLowerLeftPanel(){
+  RecordTimeToSuccessThreshold();
+  ComputeAvgSuccessTime();
+}
+
+
 // X
 function HandTooLeft(){
   if(meanPosition(0) < 0.25){
@@ -695,6 +724,7 @@ Leap.loop(controllerOptions, function(frame){
   else if (programState == 2){
     HandleState2(frame);
   }
-  //console.log(successChart.toString())
+  DrawLowerLeftPanel();
+  lastFrameAccuracy = m;
 }
 );
