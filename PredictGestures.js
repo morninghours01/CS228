@@ -49,7 +49,7 @@ let successChart = nj.zeros(10);
 let timingChart = nj.zeros(10);
 let averageTimeToSuccessThreshold;
 let prevAverageSuccessTime = null;
-let otherTimeToCompare = null;
+let maxTimeToCompare = null;
 
 let list;
 
@@ -86,11 +86,18 @@ function CreateNewUser(username,list){
 }
 
 
-function GetOtherUserTiming(){
-  let listedTimes = document.querySelectorAll('*[id$="averageSuccessTime"]');
-  for(k=0; k<2;k ++){
-    console.log(listedTimes[k].innerHTML)
+function GetMaxUserTiming(){
+  let listedTimes = document.querySelectorAll('*[id$="_averageSuccessTime"]');
+  let otherTimes = nj.zeros(listedTimes.length)
+
+  for(k=0; k < listedTimes.length; k ++){
+    let timeListItem = listedTimes[k]
+    // if(timeListItem.id)
+    if(timeListItem.id.slice(0,-19) != username){
+      otherTimes.set(k,parseFloat(timeListItem.innerHTML))
+    }
   }
+  maxTimeToCompare = otherTimes.max()
 }
 
 
@@ -108,7 +115,7 @@ function SignIn(){
     prevAverageSuccessTime = parseFloat(document.getElementById( ID ).innerHTML);
   }
   console.log(list.innerHTML);
-  GetOtherUserTiming()
+  GetMaxUserTiming()
   return false;
 }
 
@@ -613,9 +620,9 @@ function DrawLowerLeftPanel(){
     textCompareLastSession = "Avg. time to reach 65% on each digit\n compared to your last session";
     DrawDifferenceBar(textCompareLastSession,prevAverageSuccessTime,panelWidth*3/4)
   }
-  if(otherTimeToCompare){
+  if(maxTimeToCompare){
     textCompareOtherUsers = "Avg. time to reach 65% on each digit\n compared to the average of all users' times.";
-    DrawDifferenceBar(textCompareOtherUsers,otherTimeToCompare,panelWidth*1/4)
+    DrawDifferenceBar(textCompareOtherUsers,maxTimeToCompare,panelWidth*1/4)
   }
 }
 
