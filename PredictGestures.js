@@ -49,7 +49,7 @@ let successChart = nj.zeros(10);
 let timingChart = nj.zeros(10);
 let averageTimeToSuccessThreshold;
 let prevAverageSuccessTime = null;
-let maxTimeToCompare = null;
+let otherTimeToCompare = null;
 
 let list;
 
@@ -86,18 +86,22 @@ function CreateNewUser(username,list){
 }
 
 
-function GetMaxUserTiming(){
+function GetOtherUserTiming(){
   let listedTimes = document.querySelectorAll('*[id$="_averageSuccessTime"]');
-  let otherTimes = nj.zeros(listedTimes.length)
-
-  for(k=0; k < listedTimes.length; k ++){
-    let timeListItem = listedTimes[k]
-    // if(timeListItem.id)
-    if(timeListItem.id.slice(0,-19) != username){
-      otherTimes.set(k,parseFloat(timeListItem.innerHTML))
+  if(listedTimes.length > 1){
+    let otherTimes = nj.zeros(listedTimes.length)
+    for(k=0; k < listedTimes.length; k ++){
+      let timeListItem = listedTimes[k]
+      // if(timeListItem.id)
+      if(timeListItem.id.slice(0,-19) != username){
+        otherTimes.set(k,parseFloat(timeListItem.innerHTML))
+      }
+      else{
+        otherTimes.set(k,100)
+      }
     }
+    otherTimeToCompare = otherTimes.min()
   }
-  maxTimeToCompare = otherTimes.max()
 }
 
 
@@ -115,7 +119,7 @@ function SignIn(){
     prevAverageSuccessTime = parseFloat(document.getElementById( ID ).innerHTML);
   }
   console.log(list.innerHTML);
-  GetMaxUserTiming()
+  GetOtherUserTiming()
   return false;
 }
 
@@ -602,16 +606,6 @@ function DrawDifferenceBar(displayText, timeToCompare, diffBarCenterX){
 }
 
 
-function DrawCompareToOthers(){
-  stroke(0);
-  strokeWeight(0);
-  fill(0);
-  textAlign(CENTER,TOP);
-  textSize(15);
-  text("Avg. time to reach 65% on each digit\n compared to the average of all users' times.",
-    panelWidth*1/4, panelHeight*(17/16))
-}
-
 function DrawLowerLeftPanel(){
   RecordTimeToSuccessThreshold();
   ComputeAvgSuccessTime();
@@ -620,9 +614,9 @@ function DrawLowerLeftPanel(){
     textCompareLastSession = "Avg. time to reach 65% on each digit\n compared to your last session";
     DrawDifferenceBar(textCompareLastSession,prevAverageSuccessTime,panelWidth*3/4)
   }
-  if(maxTimeToCompare){
-    textCompareOtherUsers = "Avg. time to reach 65% on each digit\n compared to the average of all users' times.";
-    DrawDifferenceBar(textCompareOtherUsers,maxTimeToCompare,panelWidth*1/4)
+  if(otherTimeToCompare){
+    textCompareOtherUsers = "Avg. time to reach 65% on each digit\n compared to best time among other users";
+    DrawDifferenceBar(textCompareOtherUsers,otherTimeToCompare,panelWidth*1/4)
   }
 }
 
