@@ -36,7 +36,7 @@ let promptingTime = baseTime;
 let keepPrompting = true;
 
 let level = 0;
-let levelUpThreshold = 0.85;
+let levelUpThreshold = 0.75;
 let successThreshold = 0.65;
 let timeToSuccessThreshold = switchingTime;
 //constants for accuracy
@@ -47,6 +47,8 @@ let lastFrameAccuracy = 0;
 
 let successChart = nj.zeros(10);
 let timingChart = nj.zeros(10);
+let attemptsChart = nj.zeros(10);
+let practice = false;
 let averageTimeToSuccessThreshold;
 let prevAverageSuccessTime = null;
 let otherTimeToCompare = null;
@@ -152,11 +154,11 @@ function Train(){
     let features1Mc = reshapeTensor4d(train1McLaughlin,i);
     knnClassifier.addExample(features1Mc.tolist(), 1);
 
-    let features1Rice = reshapeTensor4d(train1Rice,i);
-    knnClassifier.addExample(features1Rice.tolist(), 1);
+    // let features1Rice = reshapeTensor4d(train1Rice,i);
+    // knnClassifier.addExample(features1Rice.tolist(), 1);
 
-    let features1Davis = reshapeTensor4d(train1Davis,i);
-    knnClassifier.addExample(features1Davis.tolist(), 1);
+    // let features1Davis = reshapeTensor4d(train1Davis,i);
+    // knnClassifier.addExample(features1Davis.tolist(), 1);
 
     let features11 = reshapeTensor4d(train1Wolley,i);
     knnClassifier.addExample(features11.tolist(), 1);
@@ -209,8 +211,8 @@ function Train(){
     knnClassifier.addExample(features6.tolist(), 6);
 
 
-    let features7 = reshapeTensor4d(train7,i);
-    knnClassifier.addExample(features7.tolist(), 7);
+    // let features7 = reshapeTensor4d(train7,i);
+    // knnClassifier.addExample(features7.tolist(), 7);
 
     let features77 = reshapeTensor4d(train7Laquerre,i);
     knnClassifier.addExample(features77.tolist(), 7);
@@ -240,9 +242,9 @@ function Train(){
 
     let features99 = reshapeTensor4d(train9Woolley,i);
     knnClassifier.addExample(features99.tolist(), 9);
-
-    let features999 = reshapeTensor4d(train9Vega,i);
-    knnClassifier.addExample(features999.tolist(), 9);
+    //
+    // let features999 = reshapeTensor4d(train9Vega,i);
+    // knnClassifier.addExample(features999.tolist(), 9);
 
     let features9999 = reshapeTensor4d(train9JClark,i);
     knnClassifier.addExample(features9999.tolist(), 9);
@@ -559,7 +561,7 @@ function AddAvgSuccessTimeToList(){
     listAvgTime.innerHTML = averageTimeToSuccessThreshold;
   }
 }
-
+//
 let diffBarCenterY = panelHeight*3/2
 let diffBarHeight = panelHeight/4
 let diffBarWidth = panelHeight/24
@@ -694,49 +696,84 @@ function HandIsUncentered(){
 
 function DetermineWhetherToLevelUp(){
   if(successChart.min() > levelUpThreshold){
-    level++;
+
+    if( level % 2 == 0 ){
+      level += 0.5
+      practice = true;
+    }
+    else if( level % 2 == 0.5){
+      practice = false;
+      attemptsChart = nj.zeros(10);
+      level+= 0.5
+    }
+    }
+    else{
+      practice = false;
+      level++;
+    }
     successChart = nj.zeros(10);
   }
   //institute level parameters
   switch (level) {
     case 0:
         switchingTime = 10;
-        promptingTime = 10;
-        levelUpThreshold = 0.85;
+        promptingTime = 8;
+        levelUpThreshold = 0.75;
       break;
 
     case 1:
         switchingTime = 8;
         promptingTime = 4;
-        levelUpThreshold = 0.75;
+        levelUpThreshold = 0.7;
       break;
 
     case 2:
         switchingTime = 6;
         promptingTime = 3;
-        levelUpThreshold = 0.7;
+        levelUpThreshold = 0.65;
+      break;
+
+    case 2.5:
+        switchingTime = 10;
+        promptingTime = 4;
+        levelUpThreshold = 0.8;
       break;
 
     case 3:
         switchingTime = 6;
         promptingTime = 2;
-        levelUpThreshold = 0.7;
+        levelUpThreshold = 0.6;
       break;
 
     case 4:
         switchingTime = 8;
         promptingTime = 0;
         levelUpThreshold = 0.8;
+      break;
+
+    case 4.5:
+        switchingTime = 10;
+        promptingTime = 4;
+        levelUpThreshold = 0.8;
+      break;
 
     case 5:
         switchingTime = 3;
         promptingTime = 1;
-        levelUpThreshold = 0.6;
+        levelUpThreshold = 0.55;
+      break;
 
     case 6:
         switchingTime = 3;
         promptingTime = 0;
-        levelUpThreshold = 0.6;
+        levelUpThreshold = 0.55;
+      break;
+
+    case 6.5:
+        switchingTime = 10;
+        promptingTime = 4;
+        levelUpThreshold = 0.8;
+      break;
 
     default:
       switchingTime = 10;
@@ -780,6 +817,7 @@ function DetermineWhetherToSwitchDigits(){
   if(TimeToSwitchDigits()){
     timeSinceLastDigitChange = new Date()
     successChart.set(digitToShow, m)
+    attemptsChart.set(digitToShow, attemptsChart.get(digitToShow)++)
     DetermineWhetherToLevelUp()
     SwitchDigits()
     //promptingTime = baseTime * (1 - 1.25*successChart.get(digitToShow));
