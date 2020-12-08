@@ -48,7 +48,11 @@ let lastFrameAccuracy = 0;
 let successChart = nj.zeros(10);
 let timingChart = nj.zeros(10);
 let attemptsChart = nj.zeros(10);
+
+let practiceChart = nj.ones(10);
 let practice = false;
+let practiceMultiple = false;
+
 let averageTimeToSuccessThreshold;
 let prevAverageSuccessTime = null;
 let otherTimeToCompare = null;
@@ -473,7 +477,7 @@ let timeBarY = panelHeight*1/16;
 let timeBarHeight = panelHeight/32
 
 
-function DrawDynamicProgressBar(accuracy){
+function DrawDynamicProgressBar(accuracy,i){
   stroke((1-accuracy)*(255), accuracy*(255),0);
   fill((1-accuracy)*(255), accuracy*(255),0);
   rect(panelWidth+(1+i)*divisionOfPanel, barY+(1-accuracy)*barHeight, barWidth, accuracy*barHeight)
@@ -495,7 +499,7 @@ function DrawDynamicProgressBar(accuracy){
 
 function DrawUpperRightPerformance(){
 
-  //time bar
+  // draw shrinking part of time bar
   fill(0);
   strokeWeight(1);
   stroke(0);
@@ -505,29 +509,50 @@ function DrawUpperRightPerformance(){
   }
   rect(panelWidth+4, timeBarY, dynamicBarWidth, timeBarHeight)
 
-  textAlign(CENTER,TOP);
-  textSize(30)
-  text('Level ' + level, panelWidth*3/2, 2*timeBarY)
-
-  textAlign(LEFT,TOP);
-  for(i=0; i<10; i++){
-    if(i == digitToShow){
-      localM = m
-      stroke((1-m)*(255), m*(255),0);
-      fill((1-m)*(255), m*(255),0);
-      text(i,panelWidth+(1+i)*divisionOfPanel,barLabelY)
-    }
-    else{
-      localM = successChart.get(i)
-      fill(0);
-      text(i,panelWidth+(1+i)*divisionOfPanel,barLabelY)
-    }
-
-    DrawDynamicProgressBar(localM)
-  }
+  // time bar border
   noFill()
   stroke(0);
   rect(panelWidth+4,timeBarY, panelWidth-8,timeBarHeight)
+
+  //practice text characteristics
+  fill(0)
+  textAlign(CENTER,TOP);
+  textSize(30)
+  // practice title
+  if(practice && practiceMultiple){
+    text('Practice these again!', panelWidth*3/2, 2*timeBarY)
+  }
+  else if(practice && !practiceMultiple){
+    text('Practice this one again!', panelWidth*3/2, 2*timeBarY)
+  }
+  else {
+    // normal level title text
+    text('Level ' + level, panelWidth*3/2, 2*timeBarY)
+  }
+
+    // text align for performance bar label
+  textAlign(LEFT,TOP);
+
+    // draw performance bars
+  for(i=0; i<10; i++){
+    //
+    if(practiceChart.get(i)){
+      // dynamic coloring for current accuracy
+      if(i == digitToShow){
+        localM = m
+        stroke((1-m)*(255), m*(255),0);
+        fill((1-m)*(255), m*(255),0);
+        text(i,panelWidth+(1+i)*divisionOfPanel,barLabelY)
+      }
+      // static coloring for all other accuracies
+      else{
+        localM = successChart.get(i)
+        fill(0);
+        text(i,panelWidth+(1+i)*divisionOfPanel,barLabelY)
+      }
+      DrawDynamicProgressBar(localM,i)
+    }
+  }
 }
 
 
@@ -693,32 +718,63 @@ function HandIsUncentered(){
   }
 }
 
+function FindPracticeDigits(){
+  practiceChart = nj.zeros(10);
+  //set all of the ones that dont matter to max accuracy
+  successChart = nj.ones(10);
+
+  for(k = 0; k<10; k++){
+    if( attemptsChart.get(k) == attemptsChart.max()){
+      practiceChart.set(k,1);
+      successChart.set(k,0);
+    }
+  }
+
+  if(practiceChart.sum() > 1){
+    practiceMultiple == true;
+  }
+  else{
+    practiceMultiple = false;
+  }
+}
 
 function DetermineWhetherToLevelUp(){
   if(successChart.min() > levelUpThreshold){
 
+
     if( level % 2 == 0 ){
       level += 0.5
       practice = true;
-    }
-    else if( level % 2 == 0.5){
-      practice = false;
-      attemptsChart = nj.zeros(10);
-      level+= 0.5
-    }
+      FindPracticeDigits()
     }
     else{
       practice = false;
-      level++;
+      practiceChart = nj.ones(10);
+
+      if( level % 2 == 0.5){
+        attemptsChart = nj.zeros(10);
+        level+= 0.5
+        successChart = nj.zeros(10);
+      }
+      else{
+        level++;
+        successChart = nj.zeros(10);
+      }
     }
-    successChart = nj.zeros(10);
   }
-  //institute level parameters
+
+  //Update level parameters based on level
   switch (level) {
     case 0:
         switchingTime = 10;
         promptingTime = 8;
         levelUpThreshold = 0.75;
+      break;
+
+    case 0.5:
+      switchingTime = 10;
+      promptingTime = 4;
+      levelUpThreshold = 0.8;
       break;
 
     case 1:
@@ -812,16 +868,15 @@ function TimeToSwitchDigits(){
   }
 }
 
-
 function DetermineWhetherToSwitchDigits(){
   if(TimeToSwitchDigits()){
     timeSinceLastDigitChange = new Date()
     successChart.set(digitToShow, m)
-    attemptsChart.set(digitToShow, attemptsChart.get(digitToShow)++)
+    attemptsChart.set(digitToShow, (attemptsChart.get(digitToShow)+1))
     DetermineWhetherToLevelUp()
     SwitchDigits()
-    //promptingTime = baseTime * (1 - 1.25*successChart.get(digitToShow));
-    //switchingTime = baseTime * (1 - 0.8*successChart.get(digitToShow));
+    //reset n to reset accuracy
+    m=0
     n=0;
   }
 }
